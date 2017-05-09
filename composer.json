@@ -1,0 +1,12 @@
+{
+    "autoload": {
+        "psr-4": {
+            "Starch\\": "src/"
+        }
+    },
+    "require": {
+        "zendframework/zend-diactoros": "^1.4",
+        "nikic/fast-route": "^1.2",
+        "php-di/php-di": "^5.4"
+    }
+}
