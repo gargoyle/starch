@@ -4,12 +4,10 @@ namespace Starch;
 
 use DI\ContainerBuilder;
 use function DI\object;
-use FastRoute\Dispatcher;
-use FastRoute\RouteCollector;
-use function FastRoute\simpleDispatcher;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Starch\Router\Router;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\Response\EmitterInterface;
 use Zend\Diactoros\Response\SapiEmitter;
@@ -25,40 +23,32 @@ class App
     public function __construct()
     {
         $this->buildContainer();
+        $this->loadRoutes();
     }
 
-    public function run(RequestInterface $request = null)
+    public function loadRoutes()
     {
-        if (null === $request) {
-            $request = $request = ServerRequestFactory::fromGlobals();
-        }
+        $this->container->get(Router::class)->get('/', function(ResponseInterface $response) {
+            $response->getBody()->write('Hello, world!');
 
-        $callback = $this->dispatch($request);
+            return $response;
+        });
+    }
 
-        $response = $callback(new Response());
+    public function run()
+    {
+        $request = $request = ServerRequestFactory::fromGlobals();
+
+        $response = $this->process($request);
 
         $this->container->get(SapiEmitter::class)->emit($response);
-
     }
 
-    public function dispatch(RequestInterface $request)
+    public function process(RequestInterface $request) : ResponseInterface
     {
-        $routeInfo = $this->container->get(Dispatcher::class)->dispatch($request->getMethod(), $request->getUri()->getPath());
+        $callback = $this->container->get(Router::class)->dispatch($request);
 
-        switch ($routeInfo[0]) {
-            case Dispatcher::NOT_FOUND:
-                // ... 404 Not Found
-                break;
-            case Dispatcher::METHOD_NOT_ALLOWED:
-                $allowedMethods = $routeInfo[1];
-                // ... 405 Method Not Allowed
-                break;
-            case Dispatcher::FOUND:
-                $handler = $routeInfo[1];
-                $vars = $routeInfo[2];
-                return $handler;
-                break;
-        }
+        return $callback(new Response());
     }
 
     private function buildContainer()
@@ -66,15 +56,7 @@ class App
         $builder = new ContainerBuilder();
 
         $builder->addDefinitions([
-            Dispatcher::class => function() {
-                return simpleDispatcher(function(RouteCollector $r) {
-                    $r->addRoute('GET', '/', function(ResponseInterface $response) {
-                        $response->getBody()->write('foo');
-
-                        return $response;
-                    });
-                });
-            },
+            Router::class => object(),
 
             EmitterInterface::class => object(SapiEmitter::class),
         ]);
