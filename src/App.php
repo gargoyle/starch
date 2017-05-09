@@ -28,7 +28,7 @@ class App
 
     public function loadRoutes()
     {
-        $this->container->get(Router::class)->get('/', function(ResponseInterface $response) {
+        $this->container->get(Router::class)->get('/', function($request, ResponseInterface $response) {
             $response->getBody()->write('Hello, world!');
 
             return $response;
@@ -48,7 +48,28 @@ class App
     {
         $callback = $this->container->get(Router::class)->dispatch($request);
 
-        return $callback(new Response());
+        $stack = new \SplStack();
+
+        $next = $callback;
+
+        $middleware = function($request, ResponseInterface $response, callable $next) {
+            $response->getBody()->write(' Before1 ');
+            $response = $next($request, $response);
+            $response->getBody()->write(' After1 ');
+
+            return $response;
+        };
+
+
+        $stack[] = function($request, $response) use ($middleware, $next) {
+            return call_user_func($middleware, $request, $response, $next);
+        };
+
+        $stack[] = $callback;
+
+        $start = $stack->bottom();
+
+        return $start($request, new Response());
     }
 
     private function buildContainer()
