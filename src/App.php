@@ -20,6 +20,11 @@ class App
      */
     private $container;
 
+    /**
+     * @var \SplStack
+     */
+    private $stack;
+
     public function __construct()
     {
         $this->buildContainer();
@@ -46,28 +51,7 @@ class App
 
     public function process(RequestInterface $request) : ResponseInterface
     {
-        $callback = $this->container->get(Router::class)->dispatch($request);
-
-        $stack = new \SplStack();
-
-        $next = $callback;
-
-        $middleware = function($request, ResponseInterface $response, callable $next) {
-            $response->getBody()->write(' Before1 ');
-            $response = $next($request, $response);
-            $response->getBody()->write(' After1 ');
-
-            return $response;
-        };
-
-
-        $stack[] = function($request, $response) use ($middleware, $next) {
-            return call_user_func($middleware, $request, $response, $next);
-        };
-
-        $stack[] = $callback;
-
-        $start = $stack->bottom();
+        $start = $this->stack->top();
 
         return $start($request, new Response());
     }
@@ -83,5 +67,26 @@ class App
         ]);
 
         $this->container = $builder->build();
+    }
+
+    public function add(callable $middleware)
+    {
+        if (null === $this->stack) {
+            $this->stack = new \SplStack();
+            $this->stack->push($this);
+        }
+
+        $next = $this->stack->top();
+        
+        $this->stack->push(function($request, $response) use ($middleware, $next) {
+            return call_user_func($middleware, $request, $response, $next);
+        });
+    }
+
+    public function __invoke(RequestInterface $request, ResponseInterface $response) : ResponseInterface
+    {
+        $callback = $this->container->get(Router::class)->dispatch($request);
+
+        return $callback($request, $response);
     }
 }
