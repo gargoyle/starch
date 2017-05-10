@@ -1,19 +1,25 @@
 <?php
 
-use Psr\Http\Message\ResponseInterface;
+use Starch\App;
 
 require('../vendor/autoload.php');
 
-$app = new \Starch\App();
+$app = new App();
 
-$app->add(function($request, ResponseInterface $response, callable $next) {
+$app->get('/', function($request, $response) {
+    $response->getBody()->write('Hello, world!');
+
+    return $response;
+});
+
+$app->add(function($request, $response, callable $next) {
     $response->getBody()->write(' Before1 ');
     $response = $next($request, $response);
     $response->getBody()->write(' After1 ');
 
     return $response;
 });
-$app->add(function($request, ResponseInterface $response, callable $next) {
+$app->add(function($request, $response, callable $next) {
     $response->getBody()->write(' Before2 ');
     $response = $next($request, $response);
     $response->getBody()->write(' After2 ');
@@ -21,8 +27,4 @@ $app->add(function($request, ResponseInterface $response, callable $next) {
     return $response;
 });
 
-
 $app->run();
-
-
-

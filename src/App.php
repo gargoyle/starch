@@ -28,27 +28,66 @@ class App
     public function __construct()
     {
         $this->buildContainer();
-        $this->loadRoutes();
     }
 
-    public function loadRoutes() : void
+    /**
+     * Override this method to add extra definitions to your app
+     *
+     * @return void
+     */
+    public function configureContainer(ContainerBuilder $builder) : void
     {
-        $this->get('/', function($request, ResponseInterface $response) {
-            $response->getBody()->write('Hello, world!');
+    }
 
-            return $response;
+    /**
+     * Add middleware
+     *
+     * This method will add the given callable to the middleware stack
+     *
+     * @param  callable $middleware
+     *
+     * @return void
+     */
+    public function add(callable $middleware) : void
+    {
+        if (null === $this->stack) {
+            $this->initiateStack();
+        }
+
+        $next = $this->stack->top();
+
+        $this->stack->push(function($request, $response) use ($middleware, $next) {
+            return call_user_func($middleware, $request, $response, $next);
         });
     }
 
-    #### ROUTER HELPER METHODS ####
+    /********************************************************************************
+     * Router proxy methods
+     *******************************************************************************/
 
+    /**
+     * Add a GET route
+     *
+     * @param  string   $route
+     * @param  callable $handler
+     *
+     * @return void
+     */
     public function get(string $route, callable $handler) : void
     {
         $this->container->get(Router::class)->map(['GET'], $route, $handler);
     }
 
+    /********************************************************************************
+     * Running the actual app
+     *******************************************************************************/
+
     /**
-     * Builds a request from globals, processes it and emits the response.
+     * Run the app
+     *
+     * Will build a request from PHP globals, process that request and then emit it
+     *
+     * @return void
      */
     public function run() : void
     {
@@ -59,6 +98,15 @@ class App
         $this->container->get(EmitterInterface::class)->emit($response);
     }
 
+    /**
+     * Process request
+     *
+     * Will send the request through the middleware stack
+     *
+     * @param  RequestInterface $request
+     *
+     * @return ResponseInterface
+     */
     public function process(RequestInterface $request) : ResponseInterface
     {
         $start = $this->stack->top();
@@ -66,6 +114,17 @@ class App
         return $start($request, new Response());
     }
 
+    /********************************************************************************
+     * Private methods
+     *******************************************************************************/
+
+    /**
+     * Build the container with a couple base service
+     *
+     * These base services can be overridden in self::configureContainer
+     *
+     * @return void
+     */
     private function buildContainer() : void
     {
         $builder = new ContainerBuilder();
@@ -81,19 +140,11 @@ class App
         $this->container = $builder->build();
     }
 
-    public function add(callable $middleware) : void
-    {
-        if (null === $this->stack) {
-            $this->initiateStack();
-        }
-
-        $next = $this->stack->top();
-        
-        $this->stack->push(function($request, $response) use ($middleware, $next) {
-            return call_user_func($middleware, $request, $response, $next);
-        });
-    }
-
+    /**
+     * Initiate the stack, adding the called route handler first
+     *
+     * @return void
+     */
     private function initiateStack() : void
     {
         $this->stack = new \SplStack();
@@ -102,12 +153,5 @@ class App
 
             return $callback($request, $response);
         });
-    }
-
-    /**
-     * Override this method to add extra definitions to your app
-     */
-    public function configureContainer(ContainerBuilder $builder) : void
-    {
     }
 }
