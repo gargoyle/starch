@@ -7,6 +7,7 @@ use function DI\object;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Starch\Middleware\Middleware;
 use Starch\Router\Router;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\Response\EmitterInterface;
@@ -54,11 +55,7 @@ class App
             $this->initiateStack();
         }
 
-        $next = $this->stack->top();
-
-        $this->stack->push(function($request, $response) use ($middleware, $next) {
-            return call_user_func($middleware, $request, $response, $next);
-        });
+        $this->stack->push(new Middleware($middleware, $this->stack->top()));
     }
 
     /********************************************************************************
