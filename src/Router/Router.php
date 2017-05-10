@@ -14,16 +14,16 @@ class Router
      */
     private $routes = [];
 
-    public function get(string $route, callable $handler)
+    public function map(array $methods, string $route, callable $handler)
     {
-        $this->routes[] = new Route('GET', $route, $handler);
+        $this->routes[] = new Route($methods, $route, $handler);
     }
 
     public function dispatch(RequestInterface $request)
     {
         $dispatcher = simpleDispatcher(function(RouteCollector $r) {
             foreach ($this->routes as $route) {
-                $r->addRoute($route->getMethod(), $route->getRoute(), $route->getHandler());
+                $r->addRoute($route->getMethods(), $route->getRoute(), $route->getHandler());
             }
         });
 

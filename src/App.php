@@ -31,22 +31,32 @@ class App
         $this->loadRoutes();
     }
 
-    public function loadRoutes()
+    public function loadRoutes() : void
     {
-        $this->container->get(Router::class)->get('/', function($request, ResponseInterface $response) {
+        $this->get('/', function($request, ResponseInterface $response) {
             $response->getBody()->write('Hello, world!');
 
             return $response;
         });
     }
 
-    public function run()
+    #### ROUTER HELPER METHODS ####
+
+    public function get(string $route, callable $handler) : void
+    {
+        $this->container->get(Router::class)->map(['GET'], $route, $handler);
+    }
+
+    /**
+     * Builds a request from globals, processes it and emits the response.
+     */
+    public function run() : void
     {
         $request = $request = ServerRequestFactory::fromGlobals();
 
         $response = $this->process($request);
 
-        $this->container->get(SapiEmitter::class)->emit($response);
+        $this->container->get(EmitterInterface::class)->emit($response);
     }
 
     public function process(RequestInterface $request) : ResponseInterface
@@ -56,7 +66,7 @@ class App
         return $start($request, new Response());
     }
 
-    private function buildContainer()
+    private function buildContainer() : void
     {
         $builder = new ContainerBuilder();
 
@@ -66,14 +76,15 @@ class App
             EmitterInterface::class => object(SapiEmitter::class),
         ]);
 
+        $this->configureContainer($builder);
+
         $this->container = $builder->build();
     }
 
-    public function add(callable $middleware)
+    public function add(callable $middleware) : void
     {
         if (null === $this->stack) {
-            $this->stack = new \SplStack();
-            $this->stack->push($this);
+            $this->initiateStack();
         }
 
         $next = $this->stack->top();
@@ -83,10 +94,20 @@ class App
         });
     }
 
-    public function __invoke(RequestInterface $request, ResponseInterface $response) : ResponseInterface
+    private function initiateStack() : void
     {
-        $callback = $this->container->get(Router::class)->dispatch($request);
+        $this->stack = new \SplStack();
+        $this->stack->push(function($request, $response) : ResponseInterface {
+            $callback = $this->container->get(Router::class)->dispatch($request);
 
-        return $callback($request, $response);
+            return $callback($request, $response);
+        });
+    }
+
+    /**
+     * Override this method to add extra definitions to your app
+     */
+    public function configureContainer(ContainerBuilder $builder) : void
+    {
     }
 }
