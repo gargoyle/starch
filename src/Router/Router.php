@@ -16,7 +16,7 @@ class Router
      */
     private $routes = [];
 
-    public function map(array $methods, string $route, callable $handler)
+    public function map(array $methods, string $route, $handler)
     {
         $this->routes[] = new Route($methods, $route, $handler);
     }

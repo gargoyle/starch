@@ -6,6 +6,7 @@ use DI\ContainerBuilder;
 use function DI\object;
 use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use InvalidArgumentException;
+use mindplay\middleman\ContainerResolver;
 use mindplay\middleman\Dispatcher;
 use mindplay\readable;
 use Psr\Container\ContainerInterface;
@@ -43,29 +44,15 @@ class App
     }
 
     /**
-     * Add middleware
+     * Add middleware to the stack
      *
-     * This method will add the given callable to the middleware stack
-     *
-     * @param callable|MiddlewareInterface $middleware
+     * @param mixed $middleware
      *
      * @return void
      */
     public function add($middleware) : void
     {
-        if (
-            $middleware instanceof MiddlewareInterface
-            || is_callable($middleware)
-        ) {
-            $this->middlewares[] = $middleware;
-
-            return;
-        }
-
-        throw new InvalidArgumentException(sprintf(
-            "Middleware must be callable or MiddlewareInterface, %s given.",
-            readable::value($middleware)
-        ));
+        $this->middlewares[] = $middleware;
     }
 
     /********************************************************************************
@@ -75,12 +62,12 @@ class App
     /**
      * Add a GET route
      *
-     * @param  string   $route
-     * @param  callable $handler
+     * @param  string $route
+     * @param  mixed  $handler
      *
      * @return void
      */
-    public function get(string $route, callable $handler) : void
+    public function get(string $route, $handler) : void
     {
         $this->container->get(Router::class)->map(['GET'], $route, $handler);
     }
@@ -118,7 +105,10 @@ class App
     {
         $this->middlewares[] = $this->container->get(Router::class)->dispatch($request);
 
-        $dispatcher = new Dispatcher($this->middlewares);
+        $dispatcher = new Dispatcher(
+            $this->middlewares,
+            new ContainerResolver($this->container)
+        );
 
         return $dispatcher->dispatch($request);
     }
