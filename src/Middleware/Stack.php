@@ -45,7 +45,9 @@ class Stack implements StackInterface
     {
         if (!isset($this->middlewares[$index])) {
             return new Delegate(function(ServerRequestInterface $request) {
-                return $this->container->call($request->getAttribute('handler'), [$request]);
+                $params = [$request] + $request->getAttribute('vars');
+
+                return $this->container->call($request->getAttribute('handler'), $params);
             });
         }
 
