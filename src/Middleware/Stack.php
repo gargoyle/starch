@@ -3,11 +3,9 @@
 namespace Starch\Middleware;
 
 use DI\Container;
-use Interop\Http\ServerMiddleware\DelegateInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use RuntimeException;
 
 class Stack implements StackInterface
 {
@@ -31,9 +29,9 @@ class Stack implements StackInterface
         $this->middlewares[] = $middleware;
     }
 
-    public function resolve(ServerRequestInterface $request, $final): ResponseInterface
+    public function resolve(ServerRequestInterface $request): ResponseInterface
     {
-        $delegate = $this->getDelegate(0, $final);
+        $delegate = $this->getDelegate(0);
 
         return $delegate->process($request);
     }
@@ -43,15 +41,15 @@ class Stack implements StackInterface
      *
      * @return Delegate
      */
-    private function getDelegate($index, $final)
+    private function getDelegate($index)
     {
         if (!isset($this->middlewares[$index])) {
-            return new Delegate(function(ServerRequestInterface $request) use ($final) {
-                return $this->container->call($final, [$request]);
+            return new Delegate(function(ServerRequestInterface $request) {
+                return $this->container->call($request->getAttribute('handler'), [$request]);
             });
         }
 
-        return new Delegate(function (ServerRequestInterface $request) use ($index, $final) {
+        return new Delegate(function (ServerRequestInterface $request) use ($index) {
             $callable = $this->middlewares[$index];
             if (is_string($callable)) {
                 $service =  $this->container->get($callable);
@@ -60,7 +58,7 @@ class Stack implements StackInterface
                 }
             }
 
-            $result = $this->container->call($callable, [$request, $this->getDelegate($index + 1, $final)]);
+            $result = $this->container->call($callable, [$request, $this->getDelegate($index + 1)]);
 
             return $result;
         });

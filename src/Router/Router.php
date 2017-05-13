@@ -2,13 +2,14 @@
 
 namespace Starch\Router;
 
+use DI\InvokerInterface;
 use FastRoute\Dispatcher;
 use FastRoute\RouteCollector;
 use function FastRoute\simpleDispatcher;
-use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Starch\Exception\HttpException;
 use Starch\Exception\MethodNotAllowedException;
 use Starch\Exception\NotFoundHttpException;
-use Starch\Middleware\StackInterface;
 
 class Router
 {
@@ -18,13 +19,13 @@ class Router
     private $routes = [];
 
     /**
-     * @var StackInterface
+     * @var InvokerInterface
      */
-    private $middlewareStack;
+    private $invoker;
 
-    public function __construct(StackInterface $middlewareStack)
+    public function __construct(InvokerInterface $invoker)
     {
-        $this->middlewareStack = $middlewareStack;
+        $this->invoker = $invoker;
     }
 
     /**
@@ -39,7 +40,18 @@ class Router
         $this->routes[] = new Route($methods, $route, $handler);
     }
 
-    public function dispatch(RequestInterface $request)
+    /**
+     * Dispatches the request to the fast-router
+     * Returns an enriched request with the proper attributes
+     * Throws appropriate exceptions if the route isn't reachable
+     *
+     * @param  ServerRequestInterface $request
+     *
+     * @throws HttpException
+     *
+     * @return ServerRequestInterface
+     */
+    public function dispatch(ServerRequestInterface $request) : ServerRequestInterface
     {
         $dispatcher = simpleDispatcher(function(RouteCollector $r) {
             foreach ($this->routes as $route) {
@@ -51,9 +63,9 @@ class Router
 
         switch ($routeInfo[0]) {
             case Dispatcher::FOUND:
-                $handler = $routeInfo[1];
-                // $vars = $routeInfo[2];
-                return $handler;
+                $request = $request->withAttribute('vars', $routeInfo[2]);
+
+                return $request->withAttribute('handler', $routeInfo[1]);
                 break;
             case Dispatcher::METHOD_NOT_ALLOWED:
                 throw new MethodNotAllowedException($request->getMethod(), $routeInfo[1]);

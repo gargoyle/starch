@@ -5,11 +5,6 @@ namespace Starch;
 use DI\Container;
 use DI\ContainerBuilder;
 use function DI\object;
-use Interop\Http\ServerMiddleware\MiddlewareInterface;
-use InvalidArgumentException;
-use mindplay\middleman\ContainerResolver;
-use mindplay\middleman\Dispatcher;
-use mindplay\readable;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -101,12 +96,9 @@ class App
      */
     public function process(ServerRequestInterface $request) : ResponseInterface
     {
-        $stack = $this->container->get(StackInterface::class);
+        $request = $this->container->get(Router::class)->dispatch($request);
 
-        return $stack->resolve(
-            $request,
-            $this->container->get(Router::class)->dispatch($request)
-        );
+        return $this->container->get(StackInterface::class)->resolve($request);
     }
 
     /********************************************************************************
