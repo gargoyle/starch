@@ -8,6 +8,7 @@ use function DI\object;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Starch\Exception\ExceptionHandler;
 use Starch\Middleware\Stack;
 use Starch\Middleware\StackInterface;
 use Starch\Router\Router;
@@ -96,9 +97,13 @@ class App
      */
     public function process(ServerRequestInterface $request) : ResponseInterface
     {
-        $request = $this->container->get(Router::class)->dispatch($request);
+        try {
+            $request = $this->container->get(Router::class)->dispatch($request);
 
-        return $this->container->get(StackInterface::class)->resolve($request);
+            return $this->container->get(StackInterface::class)->resolve($request);
+        } catch (\Exception $e) {
+            return $this->container->get(ExceptionHandler::class)->handle($e);
+        }
     }
 
     /********************************************************************************
