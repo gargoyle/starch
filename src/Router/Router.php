@@ -35,7 +35,7 @@ class Router
      * @param string $path
      * @param mixed  $handler
      */
-    public function map(array $methods, string $path, $handler)
+    public function map(array $methods, string $path, $handler) : void
     {
         $this->routes[] = new Route($methods, $path, $handler);
     }

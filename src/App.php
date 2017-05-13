@@ -127,7 +127,7 @@ class App
      *
      * @return void
      */
-    public function map(array $methods, string $path, $handler)
+    public function map(array $methods, string $path, $handler) : void
     {
         $this->container->get(Router::class)->map($methods, $path, $handler);
     }
