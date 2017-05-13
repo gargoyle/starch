@@ -4,12 +4,14 @@ namespace Starch;
 
 use DI\ContainerBuilder;
 use function DI\object;
+use Interop\Http\ServerMiddleware\MiddlewareInterface;
+use InvalidArgumentException;
+use mindplay\middleman\Dispatcher;
+use mindplay\readable;
 use Psr\Container\ContainerInterface;
-use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
-use Starch\Middleware\Middleware;
+use Psr\Http\Message\ServerRequestInterface;
 use Starch\Router\Router;
-use Zend\Diactoros\Response;
 use Zend\Diactoros\Response\EmitterInterface;
 use Zend\Diactoros\Response\SapiEmitter;
 use Zend\Diactoros\ServerRequestFactory;
@@ -22,9 +24,9 @@ class App
     private $container;
 
     /**
-     * @var \SplStack
+     * @var (callable|MiddlewareInterface)[]
      */
-    private $stack;
+    private $middlewares = [];
 
     public function __construct()
     {
@@ -45,17 +47,25 @@ class App
      *
      * This method will add the given callable to the middleware stack
      *
-     * @param  callable $middleware
+     * @param callable|MiddlewareInterface $middleware
      *
      * @return void
      */
-    public function add(callable $middleware) : void
+    public function add($middleware) : void
     {
-        if (null === $this->stack) {
-            $this->initiateStack();
+        if (
+            $middleware instanceof MiddlewareInterface
+            || is_callable($middleware)
+        ) {
+            $this->middlewares[] = $middleware;
+
+            return;
         }
 
-        $this->stack->push(new Middleware($middleware, $this->stack->top()));
+        throw new InvalidArgumentException(sprintf(
+            "Middleware must be callable or MiddlewareInterface, %s given.",
+            readable::value($middleware)
+        ));
     }
 
     /********************************************************************************
@@ -96,19 +106,21 @@ class App
     }
 
     /**
-     * Process request
+     * Dispatch the request to the router
+     * Add the returned handler as the last Middleware
+     * Send the Request through the stack
      *
-     * Will send the request through the middleware stack
-     *
-     * @param  RequestInterface $request
+     * @param  ServerRequestInterface $request
      *
      * @return ResponseInterface
      */
-    public function process(RequestInterface $request) : ResponseInterface
+    public function process(ServerRequestInterface $request) : ResponseInterface
     {
-        $start = $this->stack->top();
+        $this->middlewares[] = $this->container->get(Router::class)->dispatch($request);
 
-        return $start($request, new Response());
+        $dispatcher = new Dispatcher($this->middlewares);
+
+        return $dispatcher->dispatch($request);
     }
 
     /********************************************************************************
@@ -135,20 +147,5 @@ class App
         $this->configureContainer($builder);
 
         $this->container = $builder->build();
-    }
-
-    /**
-     * Initiate the stack, adding the called route handler first
-     *
-     * @return void
-     */
-    private function initiateStack() : void
-    {
-        $this->stack = new \SplStack();
-        $this->stack->push(function($request, $response) : ResponseInterface {
-            $callback = $this->container->get(Router::class)->dispatch($request);
-
-            return $callback($request, $response);
-        });
     }
 }
