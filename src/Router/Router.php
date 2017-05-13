@@ -8,6 +8,7 @@ use function FastRoute\simpleDispatcher;
 use Psr\Http\Message\RequestInterface;
 use Starch\Exception\MethodNotAllowedException;
 use Starch\Exception\NotFoundHttpException;
+use Starch\Middleware\StackInterface;
 
 class Router
 {
@@ -16,6 +17,23 @@ class Router
      */
     private $routes = [];
 
+    /**
+     * @var StackInterface
+     */
+    private $middlewareStack;
+
+    public function __construct(StackInterface $middlewareStack)
+    {
+        $this->middlewareStack = $middlewareStack;
+    }
+
+    /**
+     * Create a new route
+     *
+     * @param array  $methods
+     * @param string $route
+     * @param mixed  $handler
+     */
     public function map(array $methods, string $route, $handler)
     {
         $this->routes[] = new Route($methods, $route, $handler);

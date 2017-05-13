@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "ef1219ee728b4d5ff53d00dabbdf3d5f",
+    "content-hash": "5611d78160ad83532182e878739bf922",
     "packages": [
         {
             "name": "container-interop/container-interop",
@@ -88,85 +88,6 @@
                 "response"
             ],
             "time": "2017-01-14T15:23:42+00:00"
-        },
-        {
-            "name": "mindplay/middleman",
-            "version": "3.0.0.x-dev",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/mindplay-dk/middleman.git",
-                "reference": "ff114e34f0b6620f095fe022857813c79486bfc0"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/mindplay-dk/middleman/zipball/ff114e34f0b6620f095fe022857813c79486bfc0",
-                "reference": "ff114e34f0b6620f095fe022857813c79486bfc0",
-                "shasum": ""
-            },
-            "require": {
-                "container-interop/container-interop": "^1.1",
-                "http-interop/http-middleware": "^0.4",
-                "mindplay/readable": "^1",
-                "php": ">=5.4",
-                "psr/http-message": "~1.0"
-            },
-            "require-dev": {
-                "mindplay/testies": "^0.2.0",
-                "mockery/mockery": "^0.9.4",
-                "phpunit/php-code-coverage": "^2.2"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "mindplay\\middleman\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "LGPL-3.0+"
-            ],
-            "authors": [
-                {
-                    "name": "Rasmus Schultz",
-                    "email": "rasmus@mindplay.dk"
-                }
-            ],
-            "description": "PSR-7 middleware dispatcher. Let's stop trying to make this complicated.",
-            "time": "2017-01-26 08:48:00"
-        },
-        {
-            "name": "mindplay/readable",
-            "version": "1.1.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/mindplay-dk/readable.git",
-                "reference": "9fcd950d0e1c35fe7f58346b5b596e96d27a5c78"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/mindplay-dk/readable/zipball/9fcd950d0e1c35fe7f58346b5b596e96d27a5c78",
-                "reference": "9fcd950d0e1c35fe7f58346b5b596e96d27a5c78",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.4"
-            },
-            "require-dev": {
-                "mindplay/testies": "dev-master",
-                "phpunit/php-code-coverage": ">=2, <4"
-            },
-            "type": "library",
-            "autoload": {
-                "classmap": [
-                    "src/"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "description": "Formats PHP values as human-readable strings",
-            "time": "2017-01-09T12:43:52+00:00"
         },
         {
             "name": "nikic/fast-route",
@@ -508,9 +429,7 @@
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "mindplay/middleman": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],

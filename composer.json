@@ -11,10 +11,10 @@
         }
     ],
     "require": {
-        "zendframework/zend-diactoros": "^1.4",
+        "http-interop/http-middleware": "^0.4",
         "nikic/fast-route": "^1.2",
         "php-di/php-di": "^5.4",
-        "mindplay/middleman": "^3.0@dev"
+        "zendframework/zend-diactoros": "^1.4"
     },
     "autoload": {
         "psr-4": {

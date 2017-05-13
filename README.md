@@ -61,5 +61,4 @@ The following components are used to provide a coherent whole
 
 - [zendframework/zend-diactoros](https://github.com/zendframework/zend-diactoros) provides the PSR-7 interfaces
 - [php-di/php-di](https://github.com/PHP-DI/PHP-DI) provides a PSR-11 container
-- [mindplay/middleman](https://github.com/mindplay-dk/middleman) adds PSR-15 middleware dispatching
 - [nikic/fast-route](https://github.com/nikic/FastRoute) is used for the routing

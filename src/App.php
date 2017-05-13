@@ -2,6 +2,7 @@
 
 namespace Starch;
 
+use DI\Container;
 use DI\ContainerBuilder;
 use function DI\object;
 use Interop\Http\ServerMiddleware\MiddlewareInterface;
@@ -12,6 +13,8 @@ use mindplay\readable;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Starch\Middleware\Stack;
+use Starch\Middleware\StackInterface;
 use Starch\Router\Router;
 use Zend\Diactoros\Response\EmitterInterface;
 use Zend\Diactoros\Response\SapiEmitter;
@@ -23,11 +26,6 @@ class App
      * @var ContainerInterface
      */
     private $container;
-
-    /**
-     * @var (callable|MiddlewareInterface)[]
-     */
-    private $middlewares = [];
 
     public function __construct()
     {
@@ -52,7 +50,7 @@ class App
      */
     public function add($middleware) : void
     {
-        $this->middlewares[] = $middleware;
+        $this->container->get(StackInterface::class)->add($middleware);
     }
 
     /********************************************************************************
@@ -103,14 +101,12 @@ class App
      */
     public function process(ServerRequestInterface $request) : ResponseInterface
     {
-        $this->middlewares[] = $this->container->get(Router::class)->dispatch($request);
+        $stack = $this->container->get(StackInterface::class);
 
-        $dispatcher = new Dispatcher(
-            $this->middlewares,
-            new ContainerResolver($this->container)
+        return $stack->resolve(
+            $request,
+            $this->container->get(Router::class)->dispatch($request)
         );
-
-        return $dispatcher->dispatch($request);
     }
 
     /********************************************************************************
@@ -129,9 +125,11 @@ class App
         $builder = new ContainerBuilder();
 
         $builder->addDefinitions([
-            Router::class => object(),
-
             EmitterInterface::class => object(SapiEmitter::class),
+
+            StackInterface::class => function(Container $container) {
+                return new Stack($container);
+            },
         ]);
 
         $this->configureContainer($builder);
