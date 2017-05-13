@@ -5,13 +5,13 @@ namespace Starch\Router;
 class Route
 {
     private $methods;
-    private $route;
+    private $path;
     private $handler;
 
-    public function __construct(array $methods, string $route, $handler)
+    public function __construct(array $methods, string $path, $handler)
     {
         $this->methods = array_map('strtoupper', $methods);
-        $this->route = $route;
+        $this->path = $path;
         $this->handler = $handler;
     }
 
@@ -20,9 +20,9 @@ class Route
         return $this->methods;
     }
 
-    public function getRoute() : string
+    public function getPath() : string
     {
-        return $this->route;
+        return $this->path;
     }
 
     public function getHandler()

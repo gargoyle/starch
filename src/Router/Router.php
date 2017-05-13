@@ -32,12 +32,12 @@ class Router
      * Create a new route
      *
      * @param array  $methods
-     * @param string $route
+     * @param string $path
      * @param mixed  $handler
      */
-    public function map(array $methods, string $route, $handler)
+    public function map(array $methods, string $path, $handler)
     {
-        $this->routes[] = new Route($methods, $route, $handler);
+        $this->routes[] = new Route($methods, $path, $handler);
     }
 
     /**
@@ -55,7 +55,7 @@ class Router
     {
         $dispatcher = simpleDispatcher(function(RouteCollector $r) {
             foreach ($this->routes as $route) {
-                $r->addRoute($route->getMethods(), $route->getRoute(), $route->getHandler());
+                $r->addRoute($route->getMethods(), $route->getPath(), $route->getHandler());
             }
         });
 

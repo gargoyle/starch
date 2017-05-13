@@ -56,14 +56,80 @@ class App
     /**
      * Add a GET route
      *
-     * @param  string $route
+     * @param  string $path
      * @param  mixed  $handler
      *
      * @return void
      */
-    public function get(string $route, $handler) : void
+    public function get(string $path, $handler) : void
     {
-        $this->container->get(Router::class)->map(['GET'], $route, $handler);
+        $this->map(['GET'], $path, $handler);
+    }
+
+    /**
+     * Add a POST route
+     *
+     * @param  string $path
+     * @param  mixed  $handler
+     *
+     * @return void
+     */
+    public function post(string $path, $handler) : void
+    {
+        $this->map(['POST'], $path, $handler);
+    }
+
+    /**
+     * Add a PUT route
+     *
+     * @param  string $path
+     * @param  mixed  $handler
+     *
+     * @return void
+     */
+    public function put(string $path, $handler) : void
+    {
+        $this->map(['PUT'], $path, $handler);
+    }
+
+    /**
+     * Add a PATCH route
+     *
+     * @param  string $path
+     * @param  mixed  $handler
+     *
+     * @return void
+     */
+    public function patch(string $path, $handler) : void
+    {
+        $this->map(['PATCH'], $path, $handler);
+    }
+
+    /**
+     * Add a DELETE route
+     *
+     * @param  string $path
+     * @param  mixed  $handler
+     *
+     * @return void
+     */
+    public function delete(string $path, $handler) : void
+    {
+        $this->map(['DELETE'], $path, $handler);
+    }
+
+    /**
+     * Map multiple methods for a route
+     *
+     * @param  array  $methods
+     * @param  string $path
+     * @param  mixed  $handler
+     *
+     * @return void
+     */
+    public function map(array $methods, string $path, $handler)
+    {
+        $this->container->get(Router::class)->map($methods, $path, $handler);
     }
 
     /********************************************************************************
