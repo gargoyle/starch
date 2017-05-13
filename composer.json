@@ -1,12 +1,24 @@
 {
+    "name": "starchphp/starch",
+    "description": "A collection of other libraries to build a PSR compatible micro-framework",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Bram Van der Sype",
+            "email": "bram.vandersype@gmail.com",
+            "homepage": "https://github.com/Brammm"
+        }
+    ],
+    "require": {
+        "zendframework/zend-diactoros": "^1.4",
+        "nikic/fast-route": "^1.2",
+        "php-di/php-di": "^5.4",
+        "mindplay/middleman": "^3.0@dev"
+    },
     "autoload": {
         "psr-4": {
             "Starch\\": "src/"
         }
-    },
-    "require": {
-        "zendframework/zend-diactoros": "^1.4",
-        "nikic/fast-route": "^1.2",
-        "php-di/php-di": "^5.4"
     }
 }
