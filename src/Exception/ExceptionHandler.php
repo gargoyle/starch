@@ -12,7 +12,6 @@ class ExceptionHandler
         switch (true) {
             case $exception instanceof HttpException:
                 return new HtmlResponse($exception->getMessage(), $exception->getStatusCode());
-                break;
         }
 
         throw $exception;

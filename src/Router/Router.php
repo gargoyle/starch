@@ -58,14 +58,11 @@ class Router
                 $route->setArguments($routeInfo[2]);
 
                 return $request->withAttribute('route', $route);
-                break;
             case Dispatcher::METHOD_NOT_ALLOWED:
                 throw new MethodNotAllowedException($request->getMethod(), $routeInfo[1]);
-                break;
             case Dispatcher::NOT_FOUND:
             default:
                 throw new NotFoundHttpException(sprintf("Route '%s' not found.", $request->getUri()->getPath()));
-                break;
         }
     }
 }
