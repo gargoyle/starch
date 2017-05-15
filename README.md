@@ -4,21 +4,10 @@ Starch binds a bunch of PSR compatible components together to form a functioning
 
 ## Installation
 
-The package isn't on packagist yet, so right now, add it to your `composer.json` first.
- 
- ```json
-"repositories": [
-    {
-        "type": "vcs",
-        "url": "https://github.com/starchphp/starch"
-    }
-]
- ```
-
-Update
+Require the package with composer
 
 ```bash
-composer update starchphp/starch
+composer require starchphp/starch
 ```
 
 ## Usage
