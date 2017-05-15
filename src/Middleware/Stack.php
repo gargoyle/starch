@@ -31,19 +31,19 @@ class Stack implements StackInterface
 
     public function resolve(ServerRequestInterface $request): ResponseInterface
     {
-        $delegate = $this->getDelegate(0);
+        $delegate = $this->getDelegate();
 
         return $delegate->process($request);
     }
 
     /**
-     * @param int $index middleware stack index
-     *
      * @return Delegate
      */
-    private function getDelegate($index)
+    private function getDelegate()
     {
-        if (!isset($this->middlewares[$index])) {
+        $middleware = array_shift($this->middlewares);
+
+        if (null === $middleware) {
             return new Delegate(function(ServerRequestInterface $request) {
                 $params = [$request] + $request->getAttribute('vars');
 
@@ -51,16 +51,15 @@ class Stack implements StackInterface
             });
         }
 
-        return new Delegate(function (ServerRequestInterface $request) use ($index) {
-            $callable = $this->middlewares[$index];
-            if (is_string($callable)) {
-                $service =  $this->container->get($callable);
-                if ($service instanceof MiddlewareInterface) {
-                    $callable = [$callable, 'process'];
+        return new Delegate(function (ServerRequestInterface $request) use ($middleware) {
+            if (is_string($middleware)) {
+                $middleware = $this->container->get($middleware);
+                if ($middleware instanceof MiddlewareInterface) {
+                    $middleware = [$middleware, 'process'];
                 }
             }
 
-            $result = $this->container->call($callable, [$request, $this->getDelegate($index + 1)]);
+            $result = $this->container->call($middleware, [$request, $this->getDelegate()]);
 
             return $result;
         });
