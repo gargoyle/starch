@@ -43,6 +43,14 @@ class App
     }
 
     /**
+     * @return ContainerInterface
+     */
+    public function getContainer() : ContainerInterface
+    {
+        return $this->container;
+    }
+
+    /**
      * Add middleware to the stack
      *
      * @param  Closure|MiddlewareInterface|string $middleware
@@ -57,14 +65,14 @@ class App
         }
 
         if (is_string($middleware)) {
-            $middleware = $this->container->get($middleware);
+            $middleware = $this->getContainer()->get($middleware);
         }
 
         if (!$middleware instanceof MiddlewareInterface) {
             throw new InvalidArgumentException(sprintf("Middleware must be instance of MiddlewareInterface (given '%s').", get_class($middleware)));
         }
 
-        $this->container->get(StackInterface::class)->add(new StackItem($middleware, $pathConstraint));
+        $this->getContainer()->get(StackInterface::class)->add(new StackItem($middleware, $pathConstraint));
     }
 
     /********************************************************************************
@@ -147,7 +155,7 @@ class App
      */
     public function map(array $methods, string $path, $handler) : void
     {
-        $this->container->get(Router::class)->map($methods, $path, $handler);
+        $this->getContainer()->get(Router::class)->map($methods, $path, $handler);
     }
 
     /********************************************************************************
@@ -167,7 +175,7 @@ class App
 
         $response = $this->process($request);
 
-        $this->container->get(EmitterInterface::class)->emit($response);
+        $this->getContainer()->get(EmitterInterface::class)->emit($response);
     }
 
     /**
@@ -182,11 +190,11 @@ class App
     public function process(ServerRequestInterface $request) : ResponseInterface
     {
         try {
-            $request = $this->container->get(Router::class)->dispatch($request);
+            $request = $this->getContainer()->get(Router::class)->dispatch($request);
 
-            return $this->container->get(StackInterface::class)->resolve($request);
+            return $this->getContainer()->get(StackInterface::class)->resolve($request);
         } catch (\Exception $e) {
-            return $this->container->get(ExceptionHandler::class)->handle($e);
+            return $this->getContainer()->get(ExceptionHandler::class)->handle($e);
         }
     }
 
