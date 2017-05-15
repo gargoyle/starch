@@ -43,13 +43,26 @@ $app->get('/', function() {
 
     return $response;
 });
+$app->get('/hello/{name}', function($request, $name) {
+    $response = new Response();
+    $response->getBody()->write(sprintf('Hello, %s!', $name));
+
+    return $response;
+});
 
 $app->add(function($request, DelegateInterface $next) {
     $response = $next->process($request);
     $response->getBody()->write(', world! ');
 
     return $response;
-});
+}, '/');
+$app->add(function($request, DelegateInterface $delegate) {
+    $response = $delegate->process($request);
+
+    $response->getBody()->write(' How are you?');
+
+    return $response;
+}, '/hello.+');
 
 $app->run();
 
