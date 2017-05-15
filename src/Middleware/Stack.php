@@ -3,6 +3,7 @@
 namespace Starch\Middleware;
 
 use DI\Container;
+use Interop\Http\ServerMiddleware\DelegateInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -25,12 +26,12 @@ class Stack implements StackInterface
         $this->container = $container;
     }
 
-    public function add($middleware): void
+    public function add($middleware) : void
     {
         $this->middlewares[] = $middleware;
     }
 
-    public function resolve(ServerRequestInterface $request): ResponseInterface
+    public function resolve(ServerRequestInterface $request) : ResponseInterface
     {
         $delegate = $this->getDelegate();
 
@@ -38,9 +39,9 @@ class Stack implements StackInterface
     }
 
     /**
-     * @return Delegate
+     * @return DelegateInterface
      */
-    private function getDelegate()
+    private function getDelegate() : DelegateInterface
     {
         $middleware = array_shift($this->middlewares);
 

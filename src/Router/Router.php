@@ -31,13 +31,15 @@ class Router
     /**
      * Create a new route
      *
-     * @param array  $methods
-     * @param string $path
-     * @param mixed  $handler
+     * @param  array  $methods
+     * @param  string $path
+     * @param  mixed  $handler
+     *
+     * @return Route
      */
-    public function map(array $methods, string $path, $handler) : void
+    public function map(array $methods, string $path, $handler) : Route
     {
-        $this->routes[] = new Route($methods, $path, $handler);
+        return $this->routes[] = new Route($methods, $path, $handler);
     }
 
     /**
@@ -62,7 +64,6 @@ class Router
         $routeInfo = $dispatcher->dispatch($request->getMethod(), $request->getUri()->getPath());
 
         switch ($routeInfo[0]) {
-
             case Dispatcher::FOUND:
                 $route = $this->routes[$routeInfo[1]];
                 $route->setArguments($routeInfo[2]);
