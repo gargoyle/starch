@@ -26,11 +26,23 @@ class Stack implements StackInterface
         $this->container = $container;
     }
 
+    /**
+     * Add a middleware to the stack
+     *
+     * @param mixed $middleware
+     */
     public function add($middleware) : void
     {
         $this->middlewares[] = $middleware;
     }
 
+    /**
+     * Get the first Delegate in the stack and call it to start the chain.
+     *
+     * @param  ServerRequestInterface $request
+     *
+     * @return ResponseInterface
+     */
     public function resolve(ServerRequestInterface $request) : ResponseInterface
     {
         $delegate = $this->getDelegate();
@@ -39,6 +51,11 @@ class Stack implements StackInterface
     }
 
     /**
+     * Returns a Delegate that has a callable to call the next middleware
+     * Will leverage the container to either call a callable or a MiddlewareInterface
+     *
+     * If the stack is empty, it will return a Delegate that will call the route handler
+     *
      * @return DelegateInterface
      */
     private function getDelegate() : DelegateInterface
