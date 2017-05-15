@@ -3,7 +3,6 @@
 namespace Starch\Middleware;
 
 use Interop\Http\ServerMiddleware\DelegateInterface;
-use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use Invoker\InvokerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -17,9 +16,9 @@ class Stack implements StackInterface
     private $invoker;
 
     /**
-     * @var MiddlewareInterface[]
+     * @var StackItem[]
      */
-    private $middlewares = [];
+    private $items = [];
 
     public function __construct(InvokerInterface $invoker)
     {
@@ -29,11 +28,11 @@ class Stack implements StackInterface
     /**
      * Add a middleware to the stack
      *
-     * @param MiddlewareInterface $middleware
+     * @param StackItem $item
      */
-    public function add(MiddlewareInterface $middleware) : void
+    public function add(StackItem $item) : void
     {
-        $this->middlewares[] = $middleware;
+        $this->items[] = $item;
     }
 
     /**
@@ -45,34 +44,38 @@ class Stack implements StackInterface
      */
     public function resolve(ServerRequestInterface $request) : ResponseInterface
     {
-        $delegate = $this->getDelegate();
+        $delegate = $this->getDelegate($request);
 
         return $delegate->process($request);
     }
 
     /**
      * Returns a Delegate that has a callable to call the next middleware
+     * Will skip over middlewares that shouldn't be executed for the request
      *
      * If the stack is empty, it will return a Delegate that will call the route handler
      *
      * @return DelegateInterface
      */
-    private function getDelegate() : DelegateInterface
+    private function getDelegate(ServerRequestInterface $request) : DelegateInterface
     {
-        $middleware = array_shift($this->middlewares);
+        do {
+            $item = array_shift($this->items);
 
-        if (null === $middleware) {
-            return new Delegate(function(ServerRequestInterface $request) {
-                /** @var Route $route */
-                $route = $request->getAttribute('route');
-                $params = [$request] + $route->getArguments();
+            if (null === $item) {
+                return new Delegate(function(ServerRequestInterface $request) {
+                    /** @var Route $route */
+                    $route = $request->getAttribute('route');
+                    $params = [$request] + $route->getArguments();
 
-                return $this->invoker->call($route->getHandler(), $params);
-            });
-        }
+                    return $this->invoker->call($route->getHandler(), $params);
+                });
+            }
+        } while (!$item->executeFor($request));
 
+        $middleware = $item->getMiddleware();
         return new Delegate(function (ServerRequestInterface $request) use ($middleware) {
-            $result = $this->invoker->call([$middleware, 'process'], [$request, $this->getDelegate()]);
+            $result = $this->invoker->call([$middleware, 'process'], [$request, $this->getDelegate($request)]);
 
             return $result;
         });

@@ -15,6 +15,7 @@ use Starch\Exception\ExceptionHandler;
 use Starch\Middleware\ClosureMiddleware;
 use Starch\Middleware\Stack;
 use Starch\Middleware\StackInterface;
+use Starch\Middleware\StackItem;
 use Starch\Router\Router;
 use Zend\Diactoros\Response\EmitterInterface;
 use Zend\Diactoros\Response\SapiEmitter;
@@ -44,11 +45,12 @@ class App
     /**
      * Add middleware to the stack
      *
-     * @param Closure|MiddlewareInterface|string $middleware
+     * @param  Closure|MiddlewareInterface|string $middleware
+     * @param  string|null $pathConstraint
      *
      * @return void
      */
-    public function add($middleware) : void
+    public function add($middleware, string $pathConstraint = null) : void
     {
         if ($middleware instanceof Closure) {
             $middleware = new ClosureMiddleware($middleware);
@@ -62,7 +64,7 @@ class App
             throw new InvalidArgumentException(sprintf("Middleware must be instance of MiddlewareInterface (given '%s').", get_class($middleware)));
         }
 
-        $this->container->get(StackInterface::class)->add($middleware);
+        $this->container->get(StackInterface::class)->add(new StackItem($middleware, $pathConstraint));
     }
 
     /********************************************************************************
@@ -137,9 +139,9 @@ class App
     /**
      * Map multiple methods for a route
      *
-     * @param  array  $methods
-     * @param  string $path
-     * @param  mixed  $handler
+     * @param  string[] $methods
+     * @param  string   $path
+     * @param  mixed    $handler
      *
      * @return void
      */
