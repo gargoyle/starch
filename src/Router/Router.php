@@ -54,18 +54,20 @@ class Router
     public function dispatch(ServerRequestInterface $request) : ServerRequestInterface
     {
         $dispatcher = simpleDispatcher(function(RouteCollector $r) {
-            foreach ($this->routes as $route) {
-                $r->addRoute($route->getMethods(), $route->getPath(), $route->getHandler());
+            foreach ($this->routes as $index => $route) {
+                $r->addRoute($route->getMethods(), $route->getPath(), $index);
             }
         });
 
         $routeInfo = $dispatcher->dispatch($request->getMethod(), $request->getUri()->getPath());
 
         switch ($routeInfo[0]) {
-            case Dispatcher::FOUND:
-                $request = $request->withAttribute('vars', $routeInfo[2]);
 
-                return $request->withAttribute('handler', $routeInfo[1]);
+            case Dispatcher::FOUND:
+                $route = $this->routes[$routeInfo[1]];
+                $route->setArguments($routeInfo[2]);
+
+                return $request->withAttribute('route', $route);
                 break;
             case Dispatcher::METHOD_NOT_ALLOWED:
                 throw new MethodNotAllowedException($request->getMethod(), $routeInfo[1]);

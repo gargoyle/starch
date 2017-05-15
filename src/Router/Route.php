@@ -15,6 +15,11 @@ class Route
     private $path;
 
     /**
+     * @var array
+     */
+    private $arguments;
+
+    /**
      * @var mixed
      */
     private $handler;
@@ -42,5 +47,21 @@ class Route
     public function getHandler()
     {
         return $this->handler;
+    }
+
+    /**
+     * @return array
+     */
+    public function getArguments(): array
+    {
+        return $this->arguments;
+    }
+
+    /**
+     * @param array $arguments
+     */
+    public function setArguments(array $arguments)
+    {
+        $this->arguments = $arguments;
     }
 }

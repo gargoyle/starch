@@ -6,6 +6,7 @@ use DI\Container;
 use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Starch\Router\Route;
 
 class Stack implements StackInterface
 {
@@ -45,9 +46,11 @@ class Stack implements StackInterface
 
         if (null === $middleware) {
             return new Delegate(function(ServerRequestInterface $request) {
-                $params = [$request] + $request->getAttribute('vars');
+                /** @var Route $route */
+                $route = $request->getAttribute('route');
+                $params = [$request] + $route->getArguments();
 
-                return $this->container->call($request->getAttribute('handler'), $params);
+                return $this->container->call($route->getHandler(), $params);
             });
         }
 
