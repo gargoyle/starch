@@ -27,6 +27,24 @@ class StackItemTest extends TestCase
         $this->request = $this->createMock(ServerRequestInterface::class);
     }
 
+    public function testThrowsExceptionOnInvalidRegex()
+    {
+        $uri = $this->createMock(UriInterface::class);
+        $uri->expects($this->once())
+            ->method('getPath')->willReturn('/');
+
+        $this->request->expects($this->once())
+            ->method('getUri')->willReturn($uri);
+
+        $item = new StackItem($this->middleware, '/[*');
+
+        try {
+            $item->executeFor($this->request);
+        } catch (\InvalidArgumentException $e) {
+            $this->assertEquals('The path constraint \'/[*\' is not a valid regular expression (Error code: 0)', $e->getMessage());
+        }
+    }
+
     public function testExecutesWithoutContstraint()
     {
         $this->request->expects($this->never())->method('getUri');

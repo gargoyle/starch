@@ -48,9 +48,9 @@ class StackItem
         $regex = str_replace('/', '\\/', $this->pathConstraint); // Escape forward slashes with backslash
         $regex = '/^' . $regex . '$/'; // Add anchors
 
-        $result = preg_match($regex, $request->getUri()->getPath());
-
-        if (false === $result) {
+        try {
+            $result = preg_match($regex, $request->getUri()->getPath());
+        } catch (\Exception $e) {
             throw new InvalidArgumentException(sprintf(
                 "The path constraint '%s' is not a valid regular expression (Error code: %d)",
                 $this->pathConstraint,
