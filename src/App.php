@@ -38,6 +38,7 @@ class App
     }
 
     /**
+     * TODO: Add param validation here and potentially the string-> instanceof MiddlewareInterface check so we can take it out of Stack?
      * Add middleware to the stack
      *
      * @param mixed $middleware
