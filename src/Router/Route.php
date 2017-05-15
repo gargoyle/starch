@@ -7,7 +7,7 @@ class Route
     /**
      * @var string[]
      */
-    private $methods;
+    private $methods = [];
 
     /**
      * @var string

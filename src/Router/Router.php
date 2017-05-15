@@ -2,7 +2,6 @@
 
 namespace Starch\Router;
 
-use DI\InvokerInterface;
 use FastRoute\Dispatcher;
 use FastRoute\RouteCollector;
 use function FastRoute\simpleDispatcher;
@@ -17,16 +16,6 @@ class Router
      * @var Route[]
      */
     private $routes = [];
-
-    /**
-     * @var InvokerInterface
-     */
-    private $invoker;
-
-    public function __construct(InvokerInterface $invoker)
-    {
-        $this->invoker = $invoker;
-    }
 
     /**
      * Create a new route
