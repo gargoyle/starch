@@ -2,6 +2,7 @@
 
 
 [![Build Status](https://img.shields.io/travis/starchphp/starch.svg?style=flat-square)](https://travis-ci.org/starchphp/starch)
+[![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/g/starchphp/starch.svg?style=flat-square)](https://scrutinizer-ci.com/g/starchphp/starch/?branch=master)
 
 Starch binds a bunch of PSR compatible components together to form a functioning micro-framework.
 
