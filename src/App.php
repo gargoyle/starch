@@ -2,13 +2,17 @@
 
 namespace Starch;
 
+use Closure;
 use DI\Container;
 use DI\ContainerBuilder;
 use function DI\object;
+use Interop\Http\ServerMiddleware\MiddlewareInterface;
+use InvalidArgumentException;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Starch\Exception\ExceptionHandler;
+use Starch\Middleware\ClosureMiddleware;
 use Starch\Middleware\Stack;
 use Starch\Middleware\StackInterface;
 use Starch\Router\Router;
@@ -38,15 +42,26 @@ class App
     }
 
     /**
-     * TODO: Add param validation here and potentially the string-> instanceof MiddlewareInterface check so we can take it out of Stack?
      * Add middleware to the stack
      *
-     * @param mixed $middleware
+     * @param Closure|MiddlewareInterface|string $middleware
      *
      * @return void
      */
     public function add($middleware) : void
     {
+        if ($middleware instanceof Closure) {
+            $middleware = new ClosureMiddleware($middleware);
+        }
+
+        if (is_string($middleware)) {
+            $middleware = $this->container->get($middleware);
+        }
+
+        if (!$middleware instanceof MiddlewareInterface) {
+            throw new InvalidArgumentException(sprintf("Middleware must be instance of MiddlewareInterface (given '%s').", get_class($middleware)));
+        }
+
         $this->container->get(StackInterface::class)->add($middleware);
     }
 

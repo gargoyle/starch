@@ -2,6 +2,7 @@
 
 namespace Starch\Middleware;
 
+use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -10,11 +11,11 @@ interface StackInterface
     /**
      * Adds a middleware to the stack
      *
-     * @param  mixed $middleware
+     * @param  MiddlewareInterface $middleware
      *
      * @return void
      */
-    public function add($middleware) : void;
+    public function add(MiddlewareInterface $middleware) : void;
 
     /**
      * Moves a request through the stack to return a response

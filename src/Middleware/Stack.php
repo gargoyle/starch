@@ -2,9 +2,9 @@
 
 namespace Starch\Middleware;
 
-use DI\Container;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface;
+use Invoker\InvokerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Starch\Router\Route;
@@ -12,26 +12,26 @@ use Starch\Router\Route;
 class Stack implements StackInterface
 {
     /**
-     * @param Container
+     * @param InvokerInterface
      */
-    private $container;
+    private $invoker;
 
     /**
-     * @var array
+     * @var MiddlewareInterface[]
      */
     private $middlewares = [];
 
-    public function __construct(Container $container)
+    public function __construct(InvokerInterface $invoker)
     {
-        $this->container = $container;
+        $this->invoker = $invoker;
     }
 
     /**
      * Add a middleware to the stack
      *
-     * @param mixed $middleware
+     * @param MiddlewareInterface $middleware
      */
-    public function add($middleware) : void
+    public function add(MiddlewareInterface $middleware) : void
     {
         $this->middlewares[] = $middleware;
     }
@@ -52,7 +52,6 @@ class Stack implements StackInterface
 
     /**
      * Returns a Delegate that has a callable to call the next middleware
-     * Will leverage the container to either call a callable or a MiddlewareInterface
      *
      * If the stack is empty, it will return a Delegate that will call the route handler
      *
@@ -68,19 +67,12 @@ class Stack implements StackInterface
                 $route = $request->getAttribute('route');
                 $params = [$request] + $route->getArguments();
 
-                return $this->container->call($route->getHandler(), $params);
+                return $this->invoker->call($route->getHandler(), $params);
             });
         }
 
         return new Delegate(function (ServerRequestInterface $request) use ($middleware) {
-            if (is_string($middleware)) {
-                $middleware = $this->container->get($middleware);
-                if ($middleware instanceof MiddlewareInterface) {
-                    $middleware = [$middleware, 'process'];
-                }
-            }
-
-            $result = $this->container->call($middleware, [$request, $this->getDelegate()]);
+            $result = $this->invoker->call([$middleware, 'process'], [$request, $this->getDelegate()]);
 
             return $result;
         });
