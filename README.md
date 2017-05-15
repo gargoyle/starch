@@ -1,5 +1,8 @@
 # starchphp/starch
 
+
+[![Build Status](https://img.shields.io/travis/starchphp/starch.svg?style=flat-square)](https://travis-ci.org/starchphp/starch)
+
 Starch binds a bunch of PSR compatible components together to form a functioning micro-framework.
 
 ## Installation
