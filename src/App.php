@@ -5,9 +5,11 @@ namespace Starch;
 use Closure;
 use DI\Container;
 use DI\ContainerBuilder;
+use function DI\get;
 use function DI\object;
 use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use InvalidArgumentException;
+use Invoker\InvokerInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -17,6 +19,7 @@ use Starch\Middleware\Stack;
 use Starch\Middleware\StackInterface;
 use Starch\Middleware\StackItem;
 use Starch\Router\Router;
+use Starch\Router\RouterMiddleware;
 use Zend\Diactoros\Response\EmitterInterface;
 use Zend\Diactoros\Response\SapiEmitter;
 use Zend\Diactoros\ServerRequestFactory;
@@ -180,8 +183,9 @@ class App
 
     /**
      * Dispatch the request to the router
-     * Add the returned handler as the last Middleware
+     * Add the RouterMiddleware as the last piece of the stack
      * Send the Request through the stack
+     * Pass exceptions to the exception handler
      *
      * @param  ServerRequestInterface $request
      *
@@ -191,6 +195,8 @@ class App
     {
         try {
             $request = $this->getContainer()->get(Router::class)->dispatch($request);
+
+            $this->add(RouterMiddleware::class);
 
             return $this->getContainer()->get(StackInterface::class)->resolve($request);
         } catch (\Exception $e) {
@@ -216,9 +222,9 @@ class App
         $builder->addDefinitions([
             EmitterInterface::class => object(SapiEmitter::class),
 
-            StackInterface::class => function(Container $container) {
-                return new Stack($container);
-            },
+            InvokerInterface::class => get(Container::class),
+
+            StackInterface::class => object(Stack::class),
         ]);
 
         $this->configureContainer($builder);

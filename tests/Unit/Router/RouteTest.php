@@ -1,6 +1,6 @@
 <?php
 
-namespace Starch\Tests\Unit\Route;
+namespace Starch\Tests\Unit\Router;
 
 use Starch\Router\Route;
 use PHPUnit\Framework\TestCase;

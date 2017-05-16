@@ -10,7 +10,6 @@ use Psr\Http\Message\UriInterface;
 use Starch\Middleware\Stack;
 use PHPUnit\Framework\TestCase;
 use Starch\Middleware\StackItem;
-use Starch\Router\Route;
 use Zend\Diactoros\Response;
 
 class StackTest extends TestCase
@@ -21,27 +20,9 @@ class StackTest extends TestCase
 
         $stack->add(new StackItem(new BazMiddleware()));
         $stack->add(new StackItem(new BarMiddleware()));
-
-        $route = $this->createMock(Route::class);
-        $route->expects($this->once())
-              ->method('getArguments')
-              ->willReturn([
-                  'foo' => 'foo'
-              ]);
-        $route->expects($this->once())
-              ->method('getHandler')
-              ->willReturn(function($request, $foo) {
-                  $response = new Response();
-                  $response->getBody()->write($foo);
-
-                  return $response;
-              });
+        $stack->add(new StackItem(new FooMiddleware()));
 
         $request = $this->createMock(ServerRequestInterface::class);
-        $request->expects($this->once())
-                ->method('getAttribute')
-                ->with($this->equalTo('route'))
-                ->willReturn($route);
 
         $response = $stack->resolve($request);
 
@@ -54,31 +35,13 @@ class StackTest extends TestCase
 
         $stack->add(new StackItem(new BazMiddleware(), '/baz'));
         $stack->add(new StackItem(new BarMiddleware()));
-
-        $route = $this->createMock(Route::class);
-        $route->expects($this->once())
-              ->method('getArguments')
-              ->willReturn([
-                  'foo' => 'foo'
-              ]);
-        $route->expects($this->once())
-              ->method('getHandler')
-              ->willReturn(function($request, $foo) {
-                  $response = new Response();
-                  $response->getBody()->write($foo);
-
-                  return $response;
-              });
+        $stack->add(new StackItem(new FooMiddleware()));
 
         $uri = $this->createMock(UriInterface::class);
         $uri->expects($this->once())
             ->method('getPath')->willReturn('/');
 
         $request = $this->createMock(ServerRequestInterface::class);
-        $request->expects($this->once())
-                ->method('getAttribute')
-                ->with($this->equalTo('route'))
-                ->willReturn($route);
 
         $request->expects($this->once())
             ->method('getUri')
@@ -89,34 +52,45 @@ class StackTest extends TestCase
         $this->assertEquals('foobar', (string) $response->getBody());
     }
 
-    public function testWorksWithEmptyStack()
+    /**
+     * @expectedException \LogicException
+     */
+    public function testThrowsLogicExceptionOnEmptyStack()
     {
         $stack = new Stack(new Invoker());
 
-        $route = $this->createMock(Route::class);
-        $route->expects($this->once())
-              ->method('getArguments')
-              ->willReturn([
-                  'foo' => 'foo'
-              ]);
-        $route->expects($this->once())
-              ->method('getHandler')
-              ->willReturn(function($request, $foo) {
-                  $response = new Response();
-                  $response->getBody()->write($foo);
+        $request = $this->createMock(ServerRequestInterface::class);
 
-                  return $response;
-              });
+        $stack->resolve($request);
+    }
+
+    /**
+     * @expectedException \LogicException
+     */
+    public function testThrowsLogicExceptionIfLastMiddlewareCallsDelegate()
+    {
+        $stack = new Stack(new Invoker());
+
+        $stack->add(new StackItem(new BarMiddleware()));
 
         $request = $this->createMock(ServerRequestInterface::class);
-        $request->expects($this->once())
-                ->method('getAttribute')
-                ->with($this->equalTo('route'))
-                ->willReturn($route);
 
-        $response = $stack->resolve($request);
+        $stack->resolve($request);
+    }
+}
 
-        $this->assertEquals('foo', (string) $response->getBody());
+class FooMiddleware implements MiddlewareInterface
+{
+    /**
+     * @inheritdoc
+     */
+    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    {
+        $response = new Response();
+
+        $response->getBody()->write('foo');
+
+        return $response;
     }
 }
 

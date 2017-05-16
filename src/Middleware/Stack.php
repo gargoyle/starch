@@ -6,7 +6,6 @@ use Interop\Http\ServerMiddleware\DelegateInterface;
 use Invoker\InvokerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Starch\Router\Route;
 
 class Stack implements StackInterface
 {
@@ -63,12 +62,8 @@ class Stack implements StackInterface
             $item = array_shift($this->items);
 
             if (null === $item) {
-                return new Delegate(function(ServerRequestInterface $request) {
-                    /** @var Route $route */
-                    $route = $request->getAttribute('route');
-                    $params = [$request] + $route->getArguments();
-
-                    return $this->invoker->call($route->getHandler(), $params);
+                return new Delegate(function() {
+                    throw new \LogicException("The last Middleware in the Stack can not call \$delagate->process()");
                 });
             }
         } while (!$item->executeFor($request));

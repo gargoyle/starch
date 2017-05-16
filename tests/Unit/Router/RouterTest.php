@@ -1,6 +1,6 @@
 <?php
 
-namespace Starch\Tests\Unit\Route;
+namespace Starch\Tests\Unit\Router;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Starch\Router\Route;
