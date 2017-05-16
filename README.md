@@ -82,3 +82,14 @@ The following components are used to provide a coherent whole
     - The stack will return Delegates that call the middlewares in a First In, First Out order.
     - Once the stack is empty, it will return one last Delegate that actually calls the route handler (with potential route arguments)
     
+## Comparison with other frameworks
+ 
+ Other micro frameworks exist that handle middleware too. Here's a comparison explaining why and where Starch is different:
+ 
+ |                                                           |                                                                            Slim                                                                           |                                      Silex                                     |              Starch             |
+ |-----------------------------------------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------:|:------------------------------------------------------------------------------:|:-------------------------------:|
+ |        Single `->add()` interface to add middleware       |                                                                            Yes                                                                            |                No  (separate `->before()` and `->after()` calls)               |               Yes               |
+ | Unified queue with full control over middleware execution |              No, outer middleware are app-bound, then follow route group middleware, then route middleware as inner most layers of the stack.             |                                       yes                                      |               Yes               |
+ |                 Middleware execution order                |                                                                 FILO (First In, Last Out)                                                                 |            FIFO (First In, First Out) with optional priority control           |               FIFO              |
+ |                    Middleware interface                   | "Double pass" See [PSR-15 meta discussion](https://github.com/php-fig/fig-standards/blob/master/proposed/http-middleware/middleware-meta.md#4-approaches) | Separate interfaces depending on wether it's a `before` or `after` middleware. | PSR-15 compatible "single pass" |
+
