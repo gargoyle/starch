@@ -52,7 +52,8 @@ class Stack implements StackInterface
      * Returns a Delegate that has a callable to call the next middleware
      * Will skip over middlewares that shouldn't be executed for the request
      *
-     * If the stack is empty, it will return a Delegate that will call the route handler
+     * If the stack is empty, it will return a Delegate that will throw an exception
+     * The last item in the stack must not call the next Delegate but rather just return a Response on it's own
      *
      * @return DelegateInterface
      */
