@@ -62,6 +62,26 @@ $app->run();
 
 ```
 
+### Using another container
+
+If you want, you can use another PSR-11 compatible container with Starch, simply pass it as a parameter when creating the app:
+ 
+ ```php
+ $app = new App($myContainer);
+ ```
+
+You must add the following services to your container:
+
+- `Invoker\InvokerInterface`: [PHP-DI/Invoker](https://github.com/PHP-DI/Invoker) is recommended.
+- `Zend\Diactoros\Response\EmitterInterface`: The built in `Zend\Diactoros\Response\SapiEmitter` is recommended.
+- `Starch\Middleware\StackInterface`: Should be an instance of `Starch\Middleware\Stack`, unless you decide to override this.
+
+Aditionally, if your container does not support auto-wiring, the following should be defined as an instance of themselves as well:
+
+- `Starch\Router\Router`
+- `Starch\Exception\ExceptionHandler`
+- `Starch\Router\RouterMiddleware`
+
 ## Components used
 
 The following components are used to provide a coherent whole
