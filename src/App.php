@@ -31,9 +31,12 @@ class App
      */
     private $container;
 
-    public function __construct()
+    public function __construct(ContainerInterface $container = null)
     {
-        $this->buildContainer();
+        $this->container = $container;
+        if (null === $container) {
+            $this->buildContainer();
+        }
     }
 
     /**
