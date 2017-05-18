@@ -114,8 +114,8 @@ class AppTest extends TestCase
     {
         $router = $this->app->getContainer()->get(Router::class);
 
-        $refl = new \ReflectionClass($router);
-        $items = $refl->getProperty('routes');
+        $reflected = new \ReflectionClass($router);
+        $items = $reflected->getProperty('routes');
         $items->setAccessible(true);
 
         $this->assertCount(1,$items->getValue($router));
