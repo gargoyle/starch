@@ -2,7 +2,7 @@
     "name": "starchphp/starch",
     "description": "A collection of other libraries to build a PSR compatible micro-framework",
     "type": "library",
-    "license": "LGPL-3.0+",
+    "license": "MIT",
     "authors": [
         {
             "name": "Bram Van der Sype",
