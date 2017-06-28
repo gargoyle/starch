@@ -5,8 +5,8 @@ namespace Starch;
 use Closure;
 use DI\Container;
 use DI\ContainerBuilder;
+use function DI\create;
 use function DI\get;
-use function DI\object;
 use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use InvalidArgumentException;
 use Invoker\InvokerInterface;
@@ -223,11 +223,11 @@ class App
         $builder = new ContainerBuilder();
 
         $builder->addDefinitions([
-            EmitterInterface::class => object(SapiEmitter::class),
+            EmitterInterface::class => create(SapiEmitter::class),
 
             InvokerInterface::class => get(Container::class),
 
-            StackInterface::class => object(Stack::class),
+            StackInterface::class => create(Stack::class),
         ]);
 
         $this->configureContainer($builder);
