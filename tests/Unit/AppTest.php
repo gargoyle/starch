@@ -38,7 +38,8 @@ class AppTest extends TestCase
 
     public function testAllowAnonymousClassAsMiddleware()
     {
-        $this->app->add(new class implements MiddlewareInterface {
+        $this->app->add(new class implements MiddlewareInterface
+        {
             public function process(ServerRequestInterface $request, DelegateInterface $delegate)
             {
                 return $delegate->process($request);

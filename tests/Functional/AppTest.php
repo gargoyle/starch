@@ -37,12 +37,12 @@ class AppTest extends AppTestCase
             return $response;
         });
 
-        $this->app->add(function(ServerRequestInterface $request, DelegateInterface $delegate) {
+        $this->app->add(function (ServerRequestInterface $request, DelegateInterface $delegate) {
             $request = $request->withHeader('x-name', 'foo');
 
             return $delegate->process($request);
         });
-        $this->app->add(function(ServerRequestInterface $request, DelegateInterface $delegate) {
+        $this->app->add(function (ServerRequestInterface $request, DelegateInterface $delegate) {
             $response = $delegate->process($request);
             $response->getBody()->write('bar');
 

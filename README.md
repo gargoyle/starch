@@ -51,13 +51,13 @@ $app->add(function($request, DelegateInterface $next) {
 
     return $response;
 });
-$app->add(function($request, DelegateInterface $delegate) {
+$app->add('/hello', function($request, DelegateInterface $delegate) {
     $response = $delegate->process($request);
 
     $response->getBody()->write(' How are you?');
 
     return $response;
-}, '/hello');
+});
 
 $app->add(RouterMiddleware::class);
 
