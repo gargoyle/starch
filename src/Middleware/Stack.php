@@ -43,7 +43,7 @@ class Stack implements StackInterface
      */
     public function resolve(ServerRequestInterface $request) : ResponseInterface
     {
-        $delegate = $this->getDelegate($request);
+        $delegate = $this->getDelegate();
 
         return $delegate->process($request);
     }
@@ -57,23 +57,25 @@ class Stack implements StackInterface
      *
      * @return DelegateInterface
      */
-    private function getDelegate(ServerRequestInterface $request) : DelegateInterface
+    private function getDelegate() : DelegateInterface
     {
-        do {
-            $item = array_shift($this->items);
+        $item = array_shift($this->items);
 
-            if (null === $item) {
-                return new Delegate(function() {
-                    throw new \LogicException("The last Middleware in the Stack can not call \$delagate->process()");
-                });
+        if (null === $item) {
+            return new Delegate(function() {
+                throw new \LogicException("The last Middleware in the Stack can not call \$delagate->process()");
+            });
+        }
+
+        return new Delegate(function (ServerRequestInterface $request) use ($item) {
+            $next = $this->getDelegate();
+
+            if ($item->executeFor($request->getAttribute('route'))) {
+
+                return $this->invoker->call([$item->getMiddleware(), 'process'], [$request, $next]);
             }
-        } while (!$item->executeFor($request->getAttribute('route')));
 
-        $middleware = $item->getMiddleware();
-        return new Delegate(function (ServerRequestInterface $request) use ($middleware) {
-            $result = $this->invoker->call([$middleware, 'process'], [$request, $this->getDelegate($request)]);
-
-            return $result;
+            return $next->process($request);
         });
 
     }
