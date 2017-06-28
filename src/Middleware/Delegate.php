@@ -3,22 +3,35 @@
 namespace Starch\Middleware;
 
 use Interop\Http\ServerMiddleware\DelegateInterface;
+use Invoker\InvokerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 class Delegate implements DelegateInterface
 {
     /**
-     * @var callable
+     * @var StackItem
      */
-    private $callable;
+    private $item;
+
+    /**
+     * @var DelegateInterface
+     */
+    private $next;
+
+    /**
+     * @var InvokerInterface
+     */
+    private $invoker;
 
     /**
      * @param callable $callable
      */
-    public function __construct(callable $callable)
+    public function __construct(StackItem $item, DelegateInterface $next, InvokerInterface $invoker)
     {
-        $this->callable = $callable;
+        $this->item = $item;
+        $this->next = $next;
+        $this->invoker = $invoker;
     }
 
     /**
@@ -28,6 +41,10 @@ class Delegate implements DelegateInterface
      */
     public function process(ServerRequestInterface $request) : ResponseInterface
     {
-        return ($this->callable)($request);
+        if ($this->item->executeFor($request->getAttribute('route'))) {
+            return $this->invoker->call([$this->item->getMiddleware(), 'process'], [$request, $this->next]);
+        }
+
+        return $this->next->process($request);
     }
 }

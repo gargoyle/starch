@@ -65,16 +65,6 @@ class Stack implements StackInterface
             return new LastDelegate();
         }
 
-        return new Delegate(function (ServerRequestInterface $request) use ($item) {
-            $next = $this->getDelegate();
-
-            if ($item->executeFor($request->getAttribute('route'))) {
-
-                return $this->invoker->call([$item->getMiddleware(), 'process'], [$request, $next]);
-            }
-
-            return $next->process($request);
-        });
-
+        return new Delegate($item, $this->getDelegate(), $this->invoker);
     }
 }
