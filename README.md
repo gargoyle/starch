@@ -50,14 +50,14 @@ $app->add(function($request, DelegateInterface $next) {
     $response->getBody()->write(', world! ');
 
     return $response;
-}, '/');
+});
 $app->add(function($request, DelegateInterface $delegate) {
     $response = $delegate->process($request);
 
     $response->getBody()->write(' How are you?');
 
     return $response;
-}, '/hello.+');
+}, '/hello');
 
 $app->add(RouterMiddleware::class);
 

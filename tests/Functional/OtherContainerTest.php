@@ -27,13 +27,13 @@ class OtherContainerTest extends AppTestCase
 
     public function testAcceptsCustomContainer()
     {
-        $this->app->add(new StubMiddleware());
         $this->app->get('/', function() {
             $response = new Response();
             $response->getBody()->write('foo');
 
             return $response;
         });
+        $this->app->add(new StubMiddleware());
         $this->app->add(RouterMiddleware::class);
 
         $response = $this->get('/');

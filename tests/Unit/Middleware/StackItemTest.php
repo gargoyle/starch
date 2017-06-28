@@ -4,10 +4,9 @@ namespace Starch\Tests\Unit\Middleware;
 
 use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use PHPUnit_Framework_MockObject_MockObject;
-use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Message\UriInterface;
 use Starch\Middleware\StackItem;
 use PHPUnit\Framework\TestCase;
+use Starch\Router\Route;
 
 class StackItemTest extends TestCase
 {
@@ -17,41 +16,24 @@ class StackItemTest extends TestCase
     private $middleware;
 
     /**
-     * @var ServerRequestInterface|PHPUnit_Framework_MockObject_MockObject
+     * @var Route|PHPUnit_Framework_MockObject_MockObject
      */
-    private $request;
+    private $route;
 
     public function setUp()
     {
         $this->middleware = $this->createMock(MiddlewareInterface::class);
-        $this->request = $this->createMock(ServerRequestInterface::class);
-    }
-
-    public function testThrowsExceptionOnInvalidRegex()
-    {
-        $uri = $this->createMock(UriInterface::class);
-        $uri->expects($this->once())
-            ->method('getPath')->willReturn('/');
-
-        $this->request->expects($this->once())
-            ->method('getUri')->willReturn($uri);
-
-        $item = new StackItem($this->middleware, '/[*');
-
-        try {
-            $item->executeFor($this->request);
-        } catch (\InvalidArgumentException $e) {
-            $this->assertEquals('The path constraint \'/[*\' is not a valid regular expression (Error code: 0)', $e->getMessage());
-        }
+        $this->route = $this->createMock(Route::class);
     }
 
     public function testExecutesWithoutContstraint()
     {
-        $this->request->expects($this->never())->method('getUri');
+        $this->route->expects($this->never())
+            ->method('getPath');
 
         $item = new StackItem($this->middleware);
 
-        $this->assertTrue($item->executeFor($this->request));
+        $this->assertTrue($item->executeFor($this->route));
     }
 
     /**
@@ -59,16 +41,13 @@ class StackItemTest extends TestCase
      */
     public function testExecutesWithConstraint(string $path, string $constraint, bool $result)
     {
-        $uri = $this->createMock(UriInterface::class);
-        $uri->expects($this->once())
-            ->method('getPath')->willReturn($path);
-
-        $this->request->expects($this->once())
-                      ->method('getUri')->willReturn($uri);
+        $this->route->expects($this->once())
+                      ->method('getPath')
+            ->willReturn($path);
 
         $item = new StackItem($this->middleware, $constraint);
 
-        $this->assertEquals($result, $item->executeFor($this->request));
+        $this->assertEquals($result, $item->executeFor($this->route));
     }
 
     public function dataProvider()
@@ -76,10 +55,8 @@ class StackItemTest extends TestCase
         return [
             ['/', '/', true],
             ['/', '/foo', false],
-            ['/foo', '/', false],
-            ['/foo', '/.+', true],
-            ['/foo/bar', '/foo', false],
-            ['/foo/bar', '/foo.+', true],
+            ['/foo', '/', true],
+            ['/foo/bar', '/foo', true],
             ['/foo', 'foo', false],
         ];
     }

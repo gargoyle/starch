@@ -6,10 +6,10 @@ use Interop\Http\ServerMiddleware\DelegateInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use Invoker\Invoker;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Message\UriInterface;
 use Starch\Middleware\Stack;
 use PHPUnit\Framework\TestCase;
 use Starch\Middleware\StackItem;
+use Starch\Router\Route;
 use Zend\Diactoros\Response;
 
 class StackTest extends TestCase
@@ -23,6 +23,8 @@ class StackTest extends TestCase
         $stack->add(new StackItem(new FooMiddleware()));
 
         $request = $this->createMock(ServerRequestInterface::class);
+        $request->method('getAttribute')
+            ->willReturn($this->createMock(Route::class));
 
         $response = $stack->resolve($request);
 
@@ -37,19 +39,35 @@ class StackTest extends TestCase
         $stack->add(new StackItem(new BarMiddleware()));
         $stack->add(new StackItem(new FooMiddleware()));
 
-        $uri = $this->createMock(UriInterface::class);
-        $uri->expects($this->once())
-            ->method('getPath')->willReturn('/');
-
         $request = $this->createMock(ServerRequestInterface::class);
-
-        $request->expects($this->once())
-            ->method('getUri')
-            ->willReturn($uri);
+        $request->method('getAttribute')
+            ->willReturn($this->createMock(Route::class));
 
         $response = $stack->resolve($request);
 
         $this->assertEquals('foobar', (string) $response->getBody());
+    }
+
+    public function testExecutesConstrainedMiddlewares()
+    {
+        $stack = new Stack(new Invoker());
+
+        $stack->add(new StackItem(new BazMiddleware(), '/baz'));
+        $stack->add(new StackItem(new BarMiddleware()));
+        $stack->add(new StackItem(new FooMiddleware()));
+
+        $route = $this->createMock(Route::class);
+        $route->method('getPath')
+            ->willReturn('/baz/foo');
+
+        $request = $this->createMock(ServerRequestInterface::class);
+
+        $request->method('getAttribute')
+            ->willReturn($route);
+
+        $response = $stack->resolve($request);
+
+        $this->assertEquals('foobarbaz', (string) $response->getBody());
     }
 
     /**
@@ -74,6 +92,8 @@ class StackTest extends TestCase
         $stack->add(new StackItem(new BarMiddleware()));
 
         $request = $this->createMock(ServerRequestInterface::class);
+        $request->method('getAttribute')
+            ->willReturn($this->createMock(Route::class));
 
         $stack->resolve($request);
     }

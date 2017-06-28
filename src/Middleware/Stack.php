@@ -67,7 +67,7 @@ class Stack implements StackInterface
                     throw new \LogicException("The last Middleware in the Stack can not call \$delagate->process()");
                 });
             }
-        } while (!$item->executeFor($request));
+        } while (!$item->executeFor($request->getAttribute('route')));
 
         $middleware = $item->getMiddleware();
         return new Delegate(function (ServerRequestInterface $request) use ($middleware) {
