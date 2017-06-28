@@ -3,11 +3,11 @@
 namespace Starch\Tests\Functional;
 
 use DI\NotFoundException;
-use Interop\Container\ContainerInterface;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use Invoker\Invoker;
 use Invoker\InvokerInterface;
+use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Starch\App;
 use Starch\Exception\ExceptionHandler;
@@ -34,6 +34,7 @@ class OtherContainerTest extends AppTestCase
 
             return $response;
         });
+        $this->app->add(RouterMiddleware::class);
 
         $response = $this->get('/');
 

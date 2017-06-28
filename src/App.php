@@ -19,7 +19,6 @@ use Starch\Middleware\Stack;
 use Starch\Middleware\StackInterface;
 use Starch\Middleware\StackItem;
 use Starch\Router\Router;
-use Starch\Router\RouterMiddleware;
 use Zend\Diactoros\Response\EmitterInterface;
 use Zend\Diactoros\Response\SapiEmitter;
 use Zend\Diactoros\ServerRequestFactory;
@@ -199,8 +198,6 @@ class App
         try {
             $request = $this->getContainer()->get(Router::class)->dispatch($request);
 
-            $this->add(RouterMiddleware::class);
-
             return $this->getContainer()->get(StackInterface::class)->resolve($request);
         } catch (\Exception $e) {
             return $this->getContainer()->get(ExceptionHandler::class)->handle($e);
@@ -227,7 +224,9 @@ class App
 
             InvokerInterface::class => get(Container::class),
 
-            StackInterface::class => create(Stack::class),
+            StackInterface::class => function (InvokerInterface $invoker) {
+                return new Stack($invoker);
+            },
         ]);
 
         $this->configureContainer($builder);

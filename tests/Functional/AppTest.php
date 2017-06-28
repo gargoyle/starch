@@ -4,6 +4,7 @@ namespace Starch\Tests\Functional;
 
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Starch\Router\RouterMiddleware;
 use Starch\Tests\AppTestCase;
 use Zend\Diactoros\Response;
 
@@ -47,6 +48,7 @@ class AppTest extends AppTestCase
 
             return $response;
         });
+        $this->app->add(RouterMiddleware::class);
 
         $response = $this->get('/');
 
@@ -62,6 +64,7 @@ class AppTest extends AppTestCase
 
             return $response;
         });
+        $this->app->add(RouterMiddleware::class);
 
         $response = $this->get('/foo');
 
@@ -77,6 +80,7 @@ class AppTest extends AppTestCase
 
             return $response;
         });
+        $this->app->add(RouterMiddleware::class);
 
         $response = $this->post('/', ['name' => 'foo']);
 

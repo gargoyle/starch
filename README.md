@@ -25,6 +25,7 @@ Create a new App, define routes, add middlewares and run the app.
 
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Starch\App;
+use Starch\Router\RouterMiddleware;
 use Zend\Diactoros\Response;
 
 require('../vendor/autoload.php');
@@ -58,9 +59,13 @@ $app->add(function($request, DelegateInterface $delegate) {
     return $response;
 }, '/hello.+');
 
+$app->add(RouterMiddleware::class);
+
 $app->run();
 
 ```
+
+**NOTE:** The RouterMiddleware is not added by default. You should add it yourself at the end of the stack or add one of your own.
 
 ### Using another container
 
