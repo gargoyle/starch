@@ -62,9 +62,7 @@ class Stack implements StackInterface
         $item = array_shift($this->items);
 
         if (null === $item) {
-            return new Delegate(function() {
-                throw new \LogicException("The last Middleware in the Stack can not call \$delagate->process()");
-            });
+            return new LastDelegate();
         }
 
         return new Delegate(function (ServerRequestInterface $request) use ($item) {
