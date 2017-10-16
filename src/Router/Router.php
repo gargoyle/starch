@@ -44,11 +44,7 @@ class Router
      */
     public function dispatch(ServerRequestInterface $request) : ServerRequestInterface
     {
-        $dispatcher = simpleDispatcher(function(RouteCollector $r) {
-            foreach ($this->routes as $index => $route) {
-                $r->addRoute($route->getMethods(), $route->getPath(), $index);
-            }
-        });
+        $dispatcher = simpleDispatcher([$this, 'addRoutes']);
 
         $routeInfo = $dispatcher->dispatch($request->getMethod(), $request->getUri()->getPath());
 
@@ -63,6 +59,20 @@ class Router
             case Dispatcher::NOT_FOUND:
             default:
                 throw new NotFoundHttpException(sprintf("Route '%s' not found.", $request->getUri()->getPath()));
+        }
+    }
+
+    /**
+     * Callable for simpleDispatcher to add routes
+     *
+     * @param RouteCollector $routeCollector
+     * 
+     * @return void
+     */
+    public function addRoutes(RouteCollector $routeCollector) : void
+    {
+        foreach ($this->routes as $index => $route) {
+            $routeCollector->addRoute($route->getMethods(), $route->getPath(), $index);
         }
     }
 }
