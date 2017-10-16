@@ -96,8 +96,8 @@ class App
     /**
      * Add a GET route
      *
-     * @param  string $path
-     * @param  mixed $handler
+     * @param string $path
+     * @param mixed $handler
      *
      * @return void
      */
@@ -109,8 +109,8 @@ class App
     /**
      * Add a POST route
      *
-     * @param  string $path
-     * @param  mixed $handler
+     * @param string $path
+     * @param mixed $handler
      *
      * @return void
      */
@@ -122,8 +122,8 @@ class App
     /**
      * Add a PUT route
      *
-     * @param  string $path
-     * @param  mixed $handler
+     * @param string $path
+     * @param mixed $handler
      *
      * @return void
      */
@@ -135,8 +135,8 @@ class App
     /**
      * Add a PATCH route
      *
-     * @param  string $path
-     * @param  mixed $handler
+     * @param string $path
+     * @param mixed $handler
      *
      * @return void
      */
@@ -148,8 +148,8 @@ class App
     /**
      * Add a DELETE route
      *
-     * @param  string $path
-     * @param  mixed $handler
+     * @param string $path
+     * @param mixed $handler
      *
      * @return void
      */
@@ -161,9 +161,9 @@ class App
     /**
      * Map multiple methods for a route
      *
-     * @param  string[] $methods
-     * @param  string $path
-     * @param  mixed $handler
+     * @param string[] $methods
+     * @param string $path
+     * @param mixed $handler
      *
      * @return void
      */

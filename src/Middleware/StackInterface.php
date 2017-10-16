@@ -10,7 +10,7 @@ interface StackInterface
     /**
      * Adds a middleware to the stack
      *
-     * @param  StackItem $item
+     * @param StackItem $item
      *
      * @return void
      */
@@ -19,7 +19,7 @@ interface StackInterface
     /**
      * Moves a request through the stack to return a response
      *
-     * @param  ServerRequestInterface $request
+     * @param ServerRequestInterface $request
      *
      * @return ResponseInterface
      */

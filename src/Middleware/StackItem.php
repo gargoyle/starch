@@ -34,7 +34,7 @@ class StackItem
     /**
      * Checks if this item should be executed for a given request
      *
-     * @param  Route $route
+     * @param Route $route
      *
      * @return bool
      */

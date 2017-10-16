@@ -20,9 +20,9 @@ class Router
     /**
      * Create a new route
      *
-     * @param  array $methods
-     * @param  string $path
-     * @param  mixed $handler
+     * @param array $methods
+     * @param string $path
+     * @param mixed $handler
      *
      * @return Route
      */
@@ -36,7 +36,7 @@ class Router
      * Returns an enriched request with the proper attributes
      * Throws appropriate exceptions if the route isn't reachable
      *
-     * @param  ServerRequestInterface $request
+     * @param ServerRequestInterface $request
      *
      * @throws HttpException
      *

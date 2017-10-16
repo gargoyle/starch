@@ -37,7 +37,7 @@ class Delegate implements DelegateInterface
     }
 
     /**
-     * @param  ServerRequestInterface $request
+     * @param ServerRequestInterface $request
      *
      * @return ResponseInterface
      */

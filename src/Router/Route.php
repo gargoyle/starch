@@ -31,9 +31,6 @@ class Route
         $this->handler = $handler;
     }
 
-    /**
-     * @return string[]
-     */
     public function getMethods(): array
     {
         return $this->methods;
@@ -49,18 +46,12 @@ class Route
         return $this->handler;
     }
 
-    /**
-     * @return array
-     */
     public function getArguments(): array
     {
         return $this->arguments;
     }
 
-    /**
-     * @param array $arguments
-     */
-    public function setArguments(array $arguments)
+    public function setArguments(array $arguments): void
     {
         $this->arguments = $arguments;
     }
