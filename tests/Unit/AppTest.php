@@ -8,6 +8,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Starch\App;
 use PHPUnit\Framework\TestCase;
 use Starch\Middleware\StackInterface;
+use Starch\Router\Route;
 use Starch\Router\Router;
 
 class AppTest extends TestCase
@@ -65,6 +66,14 @@ class AppTest extends TestCase
         $this->app->add(new Stub());
     }
 
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testPathConstraintMustBeString()
+    {
+        $this->app->add(['foo', 'bar'], new StubMiddleware());
+    }
+
     private function assertStackHasMiddleware()
     {
         $stack = $this->app->getContainer()->get(StackInterface::class);
@@ -119,9 +128,12 @@ class AppTest extends TestCase
         $items = $reflected->getProperty('routes');
         $items->setAccessible(true);
 
-        $this->assertCount(1,$items->getValue($router));
-        $this->assertEquals('/', $items->getValue($router)[0]->getPath());
-        $this->assertEquals([$method], $items->getValue($router)[0]->getMethods());
+        /** @var Route[] $routes */
+        $routes = $items->getValue($router);
+
+        $this->assertCount(1,$routes);
+        $this->assertEquals('/', $routes[0]->getPath());
+        $this->assertEquals([$method], $routes[0]->getMethods());
     }
 }
 

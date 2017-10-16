@@ -59,7 +59,7 @@ class App
      * Add middleware to the stack
      *
      * @param  string|Closure|MiddlewareInterface $pathConstraint The path constraint or a middleware
-     * @param  Closure|MiddlewareInterface|string $middleware
+     * @param  Closure|MiddlewareInterface|string|null $middleware
      *
      * @return void
      */
@@ -76,6 +76,10 @@ class App
 
         if (is_string($middleware)) {
             $middleware = $this->getContainer()->get($middleware);
+        }
+
+        if (null !== $pathConstraint && !is_string($pathConstraint)) {
+            throw new InvalidArgumentException(sprintf("Path constraint must be null or a string (given '%s').", gettype($pathConstraint)));
         }
 
         if (!$middleware instanceof MiddlewareInterface) {
