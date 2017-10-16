@@ -66,14 +66,6 @@ class AppTest extends TestCase
         $this->app->add(new Stub());
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
-    public function testPathConstraintMustBeString()
-    {
-        $this->app->add(['foo', 'bar'], new StubMiddleware());
-    }
-
     private function assertStackHasMiddleware()
     {
         $stack = $this->app->getContainer()->get(StackInterface::class);

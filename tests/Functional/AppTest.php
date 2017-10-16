@@ -56,6 +56,32 @@ class AppTest extends AppTestCase
         $this->assertEquals('foobar', (string)$response->getBody());
     }
 
+    public function testConstrainsMiddlewareToPath()
+    {
+        $this->app->get('/foo', function() {
+            return new Response();
+        });
+
+        $this->app->add(function (ServerRequestInterface $request, DelegateInterface $delegate) {
+            $response =  $delegate->process($request);
+
+            return $response->withHeader('x-foo', 'foo');
+        }, '/foo');
+
+        $this->app->add(function (ServerRequestInterface $request, DelegateInterface $delegate) {
+            $response =  $delegate->process($request);
+
+            return $response->withHeader('x-bar', 'foo');
+        }, '/bar');
+        $this->app->add(RouterMiddleware::class);
+
+        $response = $this->get('/foo');
+
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertTrue($response->hasHeader('x-foo'));
+        $this->assertFalse($response->hasHeader('x-bar'));
+    }
+
     public function testSetsRouteArguments()
     {
         $this->app->get('/{name}', function(ServerRequestInterface $request, $name) {
