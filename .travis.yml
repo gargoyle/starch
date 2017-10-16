@@ -12,12 +12,7 @@ matrix:
     - php: nightly
 
 before_script:
-  - if [[ $(phpenv version-name) == '7.1' ]]; then composer require satooshi/php-coveralls:dev-master -n ; fi
-  - if [[ $(phpenv version-name) != '7.1' ]]; then composer install -n ; fi
+  - composer install
 
 script:
-  - if [[ $(phpenv version-name) == '7.1' ]]; then vendor/bin/phpunit --coverage-clover clover.xml ; fi
-  - if [[ $(phpenv version-name) != '7.1' ]]; then vendor/bin/phpunit ; fi
-
-after_script:
-  - if [[ $(phpenv version-name) == '7.1' ]]; then php vendor/bin/coveralls -v ; fi
+  - vendor/bin/phpunit
