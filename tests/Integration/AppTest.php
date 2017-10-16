@@ -4,12 +4,11 @@ namespace Starch\Tests\Integration;
 
 use GuzzleHttp\Client;
 use PHPUnit\Framework\TestCase;
-use Starch\App;
 
 class AppTest extends TestCase
 {
     /**
-     * @covers \Starch\App::run
+     * @covers \Starch\App::run()
      */
     public function testRunApp()
     {
@@ -23,5 +22,6 @@ class AppTest extends TestCase
         $response = $client->request('GET', $url);
         
         $this->assertEquals('Hello, world!', (string)$response->getBody());
+        $this->assertTrue($response->hasHeader('x-foo'));
     }
 }

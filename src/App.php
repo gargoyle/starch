@@ -182,6 +182,8 @@ class App
      * Will build a request from PHP globals, process that request and then emit it
      *
      * @return void
+     *
+     * @codeCoverageIgnore
      */
     public function run() : void
     {
