@@ -25,7 +25,9 @@ class Delegate implements DelegateInterface
     private $invoker;
 
     /**
-     * @param callable $callable
+     * @param StackItem $item
+     * @param DelegateInterface $next
+     * @param InvokerInterface $invoker
      */
     public function __construct(StackItem $item, DelegateInterface $next, InvokerInterface $invoker)
     {
