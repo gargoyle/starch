@@ -17,6 +17,7 @@
         "zendframework/zend-diactoros": "^1.4"
     },
     "require-dev": {
+        "guzzlehttp/guzzle": "^6.3",
         "phpunit/phpunit": "^6.1"
     },
     "minimum-stability": "alpha",
@@ -29,5 +30,8 @@
         "psr-4": {
             "Starch\\Tests\\": "tests/"
         }
+    },
+    "config": {
+        "sort-packages": true
     }
 }

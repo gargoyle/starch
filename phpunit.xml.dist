@@ -7,6 +7,9 @@
         <testsuite name="Functional">
             <directory>tests/Functional</directory>
         </testsuite>
+        <testsuite name="Integration">
+            <directory>tests/Integration</directory>
+        </testsuite>
     </testsuites>
 
     <filter>
@@ -14,4 +17,13 @@
             <directory suffix=".php">src</directory>
         </whitelist>
     </filter>
+
+    <listeners>
+        <listener class="Starch\Tests\Integration\IntegrationListener" />
+    </listeners>
+
+    <php>
+        <env name="INTEGRATION_TEST_SERVER_HOST" value="localhost" />
+        <env name="INTEGRATION_TEST_SERVER_PORT" value="8453" />
+    </php>
 </phpunit>
