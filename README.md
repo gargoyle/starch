@@ -51,13 +51,13 @@ $app->add(function($request, DelegateInterface $next) {
 
     return $response;
 });
-$app->add('/hello', function($request, DelegateInterface $delegate) {
+$app->add(function($request, DelegateInterface $delegate) {
     $response = $delegate->process($request);
 
     $response->getBody()->write(' How are you?');
 
     return $response;
-});
+}, '/hello');
 
 $app->add(RouterMiddleware::class);
 
@@ -65,7 +65,13 @@ $app->run();
 
 ```
 
-**NOTE:** The RouterMiddleware is not added by default. You should add it yourself at the end of the stack or add one of your own.
+#### Constraining middleware to certain pahts
+
+The `App::add` method has an optional second `$pathConstraint` parameter. Add a (part of a) route path here to limit the
+ execution of this middleware to this route. 
+
+#### RouterMiddleware
+The RouterMiddleware is not added by default. You should add it yourself at the end of the stack or add one of your own.
 
 ### Using another container
 
