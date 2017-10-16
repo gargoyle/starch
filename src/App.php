@@ -39,12 +39,21 @@ class App
     }
 
     /**
-     * Override this method to add extra definitions to your app
+     * Override this method to add extra definitions to your app (don't forget to call parent::configureContainer)
+     * Or add your own implementations of the definitions below
+     * IMPORTANT: The definitions defined here are required for the app to run successfully
      *
      * @return void
      */
     public function configureContainer(ContainerBuilder $builder) : void
     {
+        $builder->addDefinitions([
+            EmitterInterface::class => autowire(SapiEmitter::class),
+
+            InvokerInterface::class => get(Container::class),
+
+            StackInterface::class => autowire(Stack::class),
+        ]);
     }
 
     /**
@@ -218,14 +227,6 @@ class App
     private function buildContainer() : void
     {
         $builder = new ContainerBuilder();
-
-        $builder->addDefinitions([
-            EmitterInterface::class => autowire(SapiEmitter::class),
-
-            InvokerInterface::class => get(Container::class),
-
-            StackInterface::class => autowire(Stack::class),
-        ]);
 
         $this->configureContainer($builder);
 

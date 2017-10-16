@@ -65,7 +65,7 @@ $app->run();
 
 ```
 
-#### Constraining middleware to certain pahts
+#### Constraining middleware to certain paths
 
 The `App::add` method has an optional second `$pathConstraint` parameter. Add a (part of a) route path here to limit the
  execution of this middleware to this route. 
@@ -73,13 +73,19 @@ The `App::add` method has an optional second `$pathConstraint` parameter. Add a 
 #### RouterMiddleware
 The RouterMiddleware is not added by default. You should add it yourself at the end of the stack or add one of your own.
 
-### Using another container
+### Container
+
+By default, Starch uses php-di as it's container. If you want to extend the App to your own, you can override 
+`App::configureContainer` to add your own dependencies. Make sure to either call `parent::configureContainer` or make sure 
+you define the required definitions (see lower).
 
 If you want, you can use another PSR-11 compatible container with Starch, simply pass it as a parameter when creating the app:
  
  ```php
  $app = new App($myContainer);
  ```
+
+#### Required definitions
 
 You must add the following services to your container:
 
