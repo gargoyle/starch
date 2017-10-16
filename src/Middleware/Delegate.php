@@ -41,7 +41,7 @@ class Delegate implements DelegateInterface
      *
      * @return ResponseInterface
      */
-    public function process(ServerRequestInterface $request) : ResponseInterface
+    public function process(ServerRequestInterface $request): ResponseInterface
     {
         if ($this->item->executeFor($request->getAttribute('route'))) {
             return $this->invoker->call([$this->item->getMiddleware(), 'process'], [$request, $this->next]);

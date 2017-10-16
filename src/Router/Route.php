@@ -34,12 +34,12 @@ class Route
     /**
      * @return string[]
      */
-    public function getMethods() : array
+    public function getMethods(): array
     {
         return $this->methods;
     }
 
-    public function getPath() : string
+    public function getPath(): string
     {
         return $this->path;
     }

@@ -29,7 +29,7 @@ class Stack implements StackInterface
      *
      * @param StackItem $item
      */
-    public function add(StackItem $item) : void
+    public function add(StackItem $item): void
     {
         $this->items[] = $item;
     }
@@ -41,7 +41,7 @@ class Stack implements StackInterface
      *
      * @return ResponseInterface
      */
-    public function resolve(ServerRequestInterface $request) : ResponseInterface
+    public function resolve(ServerRequestInterface $request): ResponseInterface
     {
         $delegate = $this->getDelegate();
 
@@ -57,7 +57,7 @@ class Stack implements StackInterface
      *
      * @return DelegateInterface
      */
-    private function getDelegate() : DelegateInterface
+    private function getDelegate(): DelegateInterface
     {
         $item = array_shift($this->items);
 

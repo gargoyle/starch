@@ -5,8 +5,6 @@ namespace Starch;
 use Closure;
 use DI\Container;
 use DI\ContainerBuilder;
-use function DI\autowire;
-use function DI\get;
 use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use InvalidArgumentException;
 use Invoker\InvokerInterface;
@@ -22,6 +20,8 @@ use Starch\Router\Router;
 use Zend\Diactoros\Response\EmitterInterface;
 use Zend\Diactoros\Response\SapiEmitter;
 use Zend\Diactoros\ServerRequestFactory;
+use function DI\autowire;
+use function DI\get;
 
 class App
 {
@@ -45,7 +45,7 @@ class App
      *
      * @return void
      */
-    public function configureContainer(ContainerBuilder $builder) : void
+    public function configureContainer(ContainerBuilder $builder): void
     {
         $builder->addDefinitions([
             EmitterInterface::class => autowire(SapiEmitter::class),
@@ -59,7 +59,7 @@ class App
     /**
      * @return ContainerInterface
      */
-    public function getContainer() : ContainerInterface
+    public function getContainer(): ContainerInterface
     {
         return $this->container;
     }
@@ -72,7 +72,7 @@ class App
      *
      * @return void
      */
-    public function add($middleware, string $pathConstraint = null) : void
+    public function add($middleware, string $pathConstraint = null): void
     {
         if ($middleware instanceof Closure) {
             $middleware = new ClosureMiddleware($middleware);
@@ -97,11 +97,11 @@ class App
      * Add a GET route
      *
      * @param  string $path
-     * @param  mixed  $handler
+     * @param  mixed $handler
      *
      * @return void
      */
-    public function get(string $path, $handler) : void
+    public function get(string $path, $handler): void
     {
         $this->map(['GET'], $path, $handler);
     }
@@ -110,11 +110,11 @@ class App
      * Add a POST route
      *
      * @param  string $path
-     * @param  mixed  $handler
+     * @param  mixed $handler
      *
      * @return void
      */
-    public function post(string $path, $handler) : void
+    public function post(string $path, $handler): void
     {
         $this->map(['POST'], $path, $handler);
     }
@@ -123,11 +123,11 @@ class App
      * Add a PUT route
      *
      * @param  string $path
-     * @param  mixed  $handler
+     * @param  mixed $handler
      *
      * @return void
      */
-    public function put(string $path, $handler) : void
+    public function put(string $path, $handler): void
     {
         $this->map(['PUT'], $path, $handler);
     }
@@ -136,11 +136,11 @@ class App
      * Add a PATCH route
      *
      * @param  string $path
-     * @param  mixed  $handler
+     * @param  mixed $handler
      *
      * @return void
      */
-    public function patch(string $path, $handler) : void
+    public function patch(string $path, $handler): void
     {
         $this->map(['PATCH'], $path, $handler);
     }
@@ -149,11 +149,11 @@ class App
      * Add a DELETE route
      *
      * @param  string $path
-     * @param  mixed  $handler
+     * @param  mixed $handler
      *
      * @return void
      */
-    public function delete(string $path, $handler) : void
+    public function delete(string $path, $handler): void
     {
         $this->map(['DELETE'], $path, $handler);
     }
@@ -162,12 +162,12 @@ class App
      * Map multiple methods for a route
      *
      * @param  string[] $methods
-     * @param  string   $path
-     * @param  mixed    $handler
+     * @param  string $path
+     * @param  mixed $handler
      *
      * @return void
      */
-    public function map(array $methods, string $path, $handler) : void
+    public function map(array $methods, string $path, $handler): void
     {
         $this->getContainer()->get(Router::class)->map($methods, $path, $handler);
     }
@@ -185,7 +185,7 @@ class App
      *
      * @codeCoverageIgnore
      */
-    public function run() : void
+    public function run(): void
     {
         $request = $request = ServerRequestFactory::fromGlobals();
 
@@ -204,7 +204,7 @@ class App
      *
      * @return ResponseInterface
      */
-    public function process(ServerRequestInterface $request) : ResponseInterface
+    public function process(ServerRequestInterface $request): ResponseInterface
     {
         try {
             $request = $this->getContainer()->get(Router::class)->dispatch($request);
@@ -226,7 +226,7 @@ class App
      *
      * @return void
      */
-    private function buildContainer() : void
+    private function buildContainer(): void
     {
         $builder = new ContainerBuilder();
 

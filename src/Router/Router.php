@@ -4,11 +4,11 @@ namespace Starch\Router;
 
 use FastRoute\Dispatcher;
 use FastRoute\RouteCollector;
-use function FastRoute\simpleDispatcher;
 use Psr\Http\Message\ServerRequestInterface;
 use Starch\Exception\HttpException;
 use Starch\Exception\MethodNotAllowedException;
 use Starch\Exception\NotFoundHttpException;
+use function FastRoute\simpleDispatcher;
 
 class Router
 {
@@ -20,13 +20,13 @@ class Router
     /**
      * Create a new route
      *
-     * @param  array  $methods
+     * @param  array $methods
      * @param  string $path
-     * @param  mixed  $handler
+     * @param  mixed $handler
      *
      * @return Route
      */
-    public function map(array $methods, string $path, $handler) : Route
+    public function map(array $methods, string $path, $handler): Route
     {
         return $this->routes[] = new Route($methods, $path, $handler);
     }
@@ -42,7 +42,7 @@ class Router
      *
      * @return ServerRequestInterface
      */
-    public function dispatch(ServerRequestInterface $request) : ServerRequestInterface
+    public function dispatch(ServerRequestInterface $request): ServerRequestInterface
     {
         $dispatcher = simpleDispatcher([$this, 'addRoutes']);
 
@@ -66,10 +66,10 @@ class Router
      * Callable for simpleDispatcher to add routes
      *
      * @param RouteCollector $routeCollector
-     * 
+     *
      * @return void
      */
-    public function addRoutes(RouteCollector $routeCollector) : void
+    public function addRoutes(RouteCollector $routeCollector): void
     {
         foreach ($this->routes as $index => $route) {
             $routeCollector->addRoute($route->getMethods(), $route->getPath(), $index);

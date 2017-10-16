@@ -7,7 +7,7 @@ use Zend\Diactoros\Response\HtmlResponse;
 
 class ExceptionHandler
 {
-    public function handle(\Exception $exception) : ResponseInterface
+    public function handle(\Exception $exception): ResponseInterface
     {
         switch (true) {
             case $exception instanceof HttpException:

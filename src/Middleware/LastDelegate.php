@@ -13,7 +13,7 @@ class LastDelegate implements DelegateInterface
      *
      * @return ResponseInterface
      */
-    public function process(ServerRequestInterface $request) : ResponseInterface
+    public function process(ServerRequestInterface $request): ResponseInterface
     {
         throw new \LogicException("The last Middleware in the Stack can not call \$delagate->process()");
     }

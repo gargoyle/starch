@@ -26,7 +26,7 @@ class StackItem
     /**
      * @return MiddlewareInterface
      */
-    public function getMiddleware() : MiddlewareInterface
+    public function getMiddleware(): MiddlewareInterface
     {
         return $this->middleware;
     }
@@ -38,7 +38,7 @@ class StackItem
      *
      * @return bool
      */
-    public function executeFor(Route $route) : bool
+    public function executeFor(Route $route): bool
     {
         if (null === $this->pathConstraint) {
             return true;

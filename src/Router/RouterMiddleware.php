@@ -23,7 +23,7 @@ class RouterMiddleware implements MiddlewareInterface
     /**
      * @inheritdoc
      */
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate) : ResponseInterface
+    public function process(ServerRequestInterface $request, DelegateInterface $delegate): ResponseInterface
     {
         /** @var Route $route */
         $route = $request->getAttribute('route');

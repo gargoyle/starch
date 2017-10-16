@@ -14,7 +14,7 @@ interface StackInterface
      *
      * @return void
      */
-    public function add(StackItem $item) : void;
+    public function add(StackItem $item): void;
 
     /**
      * Moves a request through the stack to return a response
@@ -23,5 +23,5 @@ interface StackInterface
      *
      * @return ResponseInterface
      */
-    public function resolve(ServerRequestInterface $request) : ResponseInterface;
+    public function resolve(ServerRequestInterface $request): ResponseInterface;
 }
