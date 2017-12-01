@@ -7,6 +7,10 @@
 
 Starch binds a bunch of PSR compatible components together to form a functioning micro-framework.
 
+<p align="center">
+![](potato.png)
+</p>
+
 ## Installation
 
 Require the package with composer
