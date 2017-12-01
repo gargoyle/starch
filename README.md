@@ -1,4 +1,4 @@
-# starchphp/starch
+# Starch
 
 
 [![Build Status](https://img.shields.io/travis/starchphp/starch.svg?style=flat-square)](https://travis-ci.org/starchphp/starch)
@@ -11,7 +11,7 @@ Starch binds a bunch of PSR compatible components together to form a functioning
 <img src="https://imgur.com/0RtqG1Q.png" />
 </p>
 
-Logo by [Pencil](https://thenounproject.com/pencil/) from Noun project
+<small>Logo by [Pencil](https://thenounproject.com/pencil/) from Noun project</small>
 
 ## Installation
 
