@@ -2,7 +2,7 @@
 
 namespace Starch\Tests\Unit\Router;
 
-use Interop\Http\ServerMiddleware\DelegateInterface;
+use Interop\Http\Server\RequestHandlerInterface;
 use Invoker\InvokerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -28,9 +28,9 @@ class RouterMiddlewareTest extends TestCase
                 ->with($this->equalTo('route'))
                 ->willReturn($route);
 
-        $delegate = $this->createMock(DelegateInterface::class);
+        $delegate = $this->createMock(RequestHandlerInterface::class);
         $delegate->expects($this->never())
-            ->method('process');
+            ->method('handle');
 
         $invoker = $this->createMock(InvokerInterface::class);
         $invoker->expects($this->once())

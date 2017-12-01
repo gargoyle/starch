@@ -5,7 +5,7 @@ namespace Starch;
 use Closure;
 use DI\Container;
 use DI\ContainerBuilder;
-use Interop\Http\ServerMiddleware\MiddlewareInterface;
+use Interop\Http\Server\MiddlewareInterface;
 use InvalidArgumentException;
 use Invoker\InvokerInterface;
 use Psr\Container\ContainerInterface;

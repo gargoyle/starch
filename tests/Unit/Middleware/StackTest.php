@@ -2,9 +2,10 @@
 
 namespace Starch\Tests\Unit\Middleware;
 
-use Interop\Http\ServerMiddleware\DelegateInterface;
-use Interop\Http\ServerMiddleware\MiddlewareInterface;
+use Interop\Http\Server\MiddlewareInterface;
+use Interop\Http\Server\RequestHandlerInterface;
 use Invoker\Invoker;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Starch\Middleware\Stack;
 use PHPUnit\Framework\TestCase;
@@ -104,7 +105,7 @@ class FooMiddleware implements MiddlewareInterface
     /**
      * @inheritdoc
      */
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $response = new Response();
 
@@ -119,9 +120,9 @@ class BarMiddleware implements MiddlewareInterface
     /**
      * @inheritdoc
      */
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $response = $delegate->process($request);
+        $response = $handler->handle($request);
 
         $response->getBody()->write('bar');
 
@@ -134,9 +135,9 @@ class BazMiddleware implements MiddlewareInterface
     /**
      * @inheritdoc
      */
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $response = $delegate->process($request);
+        $response = $handler->handle($request);
 
         $response->getBody()->write('baz');
 

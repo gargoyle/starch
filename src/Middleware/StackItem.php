@@ -2,7 +2,7 @@
 
 namespace Starch\Middleware;
 
-use Interop\Http\ServerMiddleware\MiddlewareInterface;
+use Interop\Http\Server\MiddlewareInterface;
 use Starch\Router\Route;
 
 class StackItem

@@ -3,8 +3,8 @@
 namespace Starch\Middleware;
 
 use Closure;
-use Interop\Http\ServerMiddleware\DelegateInterface;
-use Interop\Http\ServerMiddleware\MiddlewareInterface;
+use Interop\Http\Server\MiddlewareInterface;
+use Interop\Http\Server\RequestHandlerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -23,8 +23,8 @@ class ClosureMiddleware implements MiddlewareInterface
     /**
      * @inheritdoc
      */
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate): ResponseInterface
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        return ($this->closure)($request, $delegate);
+        return ($this->closure)($request, $handler);
     }
 }

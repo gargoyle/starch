@@ -3,11 +3,12 @@
 namespace Starch\Tests\Functional;
 
 use DI\NotFoundException;
-use Interop\Http\ServerMiddleware\DelegateInterface;
-use Interop\Http\ServerMiddleware\MiddlewareInterface;
+use Interop\Http\Server\MiddlewareInterface;
+use Interop\Http\Server\RequestHandlerInterface;
 use Invoker\Invoker;
 use Invoker\InvokerInterface;
 use Psr\Container\ContainerInterface;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Starch\App;
 use Starch\Exception\ExceptionHandler;
@@ -72,9 +73,9 @@ class OtherContainer implements ContainerInterface
 
 class StubMiddleware implements MiddlewareInterface
 {
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $response = $delegate->process($request);
+        $response = $handler->handle($request);
         $response->getBody()->write('bar');
 
         return $response;
