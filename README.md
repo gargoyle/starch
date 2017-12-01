@@ -8,7 +8,7 @@
 Starch binds a bunch of PSR compatible components together to form a functioning micro-framework.
 
 <p align="center">
-<img src="https://github.com/starchphp/starch/blob/master/potato.png" />
+<img src="https://imgur.com/0RtqG1Q.png" />
 </p>
 
 Logo by [Pencil](https://thenounproject.com/pencil/) from Noun project
