@@ -8,7 +8,7 @@ use Interop\Http\ServerMiddleware\DelegateInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Starch\App;
 use Starch\Router\RouterMiddleware;
-use Zend\Diactoros\Response;
+use Zend\Diactoros\Response\TextResponse;
 
 class IntegrationTest extends App
 {
@@ -17,10 +17,7 @@ class IntegrationTest extends App
         parent::__construct();
 
         $this->get('/', function() {
-            $response = new Response();
-            $response->getBody()->write('Hello, world!');
-
-            return $response;
+            return new TextResponse('Hello, world!');
         });
 
         $this->add(function (ServerRequestInterface $request, DelegateInterface $delegate) {
