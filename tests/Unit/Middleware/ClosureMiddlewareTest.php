@@ -2,7 +2,7 @@
 
 namespace Starch\Tests\Unit\Middleware;
 
-use Interop\Http\ServerMiddleware\DelegateInterface;
+use Interop\Http\Server\RequestHandlerInterface;
 use PHPUnit_Framework_MockObject_MockObject;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -15,16 +15,16 @@ class ClosureMiddlewareTest extends TestCase
     {
         /** @var ServerRequestInterface|PHPUnit_Framework_MockObject_MockObject $mockRequest */
         $mockRequest = $this->createMock(ServerRequestInterface::class);
-        /** @var DelegateInterface|PHPUnit_Framework_MockObject_MockObject $mockDelegate */
-        $mockDelegate = $this->createMock(DelegateInterface::class);
-        $mockDelegate->method('process')
+        /** @var RequestHandlerInterface|PHPUnit_Framework_MockObject_MockObject $mockDelegate */
+        $mockDelegate = $this->createMock(RequestHandlerInterface::class);
+        $mockDelegate->method('handle')
             ->willReturn($this->createMock(ResponseInterface::class));
 
-        $middleware = new ClosureMiddleware(function(ServerRequestInterface $request, DelegateInterface $delegate) use ($mockRequest, $mockDelegate) {
+        $middleware = new ClosureMiddleware(function(ServerRequestInterface $request, RequestHandlerInterface $handler) use ($mockRequest, $mockDelegate) {
             $this->assertEquals($mockRequest, $request);
-            $this->assertEquals($mockDelegate, $delegate);
+            $this->assertEquals($mockDelegate, $handler);
 
-            return $delegate->process($request);
+            return $handler->handle($request);
         });
 
         $middleware->process($mockRequest, $mockDelegate);

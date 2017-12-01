@@ -4,7 +4,7 @@ namespace Starch\Tests\Integration;
 
 require_once('../../vendor/autoload.php');
 
-use Interop\Http\ServerMiddleware\DelegateInterface;
+use Interop\Http\Server\RequestHandlerInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Starch\App;
 use Starch\Router\RouterMiddleware;
@@ -20,8 +20,8 @@ class IntegrationTest extends App
             return new TextResponse('Hello, world!');
         });
 
-        $this->add(function (ServerRequestInterface $request, DelegateInterface $delegate) {
-            $response = $delegate->process($request);
+        $this->add(function (ServerRequestInterface $request, RequestHandlerInterface $handler) {
+            $response = $handler->handle($request);
 
             return $response->withHeader('x-foo', 'bar');
         });

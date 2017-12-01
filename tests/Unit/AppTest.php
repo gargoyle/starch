@@ -2,8 +2,9 @@
 
 namespace Starch\Tests\Unit;
 
-use Interop\Http\ServerMiddleware\DelegateInterface;
-use Interop\Http\ServerMiddleware\MiddlewareInterface;
+use Interop\Http\Server\MiddlewareInterface;
+use Interop\Http\Server\RequestHandlerInterface;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Starch\App;
 use PHPUnit\Framework\TestCase;
@@ -41,9 +42,9 @@ class AppTest extends TestCase
     {
         $this->app->add(new class implements MiddlewareInterface
         {
-            public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+            public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
             {
-                return $delegate->process($request);
+                return $handler->handle($request);
             }
         });
 
@@ -134,8 +135,8 @@ class Stub {
 
 class StubMiddleware implements MiddlewareInterface
 {
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        return $delegate->process($request);
+        return $handler->handle($request);
     }
 }

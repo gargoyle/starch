@@ -2,7 +2,7 @@
 
 namespace Starch\Tests\Functional;
 
-use Interop\Http\ServerMiddleware\DelegateInterface;
+use Interop\Http\Server\RequestHandlerInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Starch\Router\RouterMiddleware;
 use Starch\Tests\AppTestCase;
@@ -19,13 +19,13 @@ class MiddlewareTest extends AppTestCase
             return $response;
         });
 
-        $this->app->add(function (ServerRequestInterface $request, DelegateInterface $delegate) {
+        $this->app->add(function (ServerRequestInterface $request, RequestHandlerInterface $handler) {
             $request = $request->withHeader('x-name', 'foo');
 
-            return $delegate->process($request);
+            return $handler->handle($request);
         });
-        $this->app->add(function (ServerRequestInterface $request, DelegateInterface $delegate) {
-            $response = $delegate->process($request);
+        $this->app->add(function (ServerRequestInterface $request, RequestHandlerInterface $handler) {
+            $response = $handler->handle($request);
             $response->getBody()->write('bar');
 
             return $response;
@@ -44,14 +44,14 @@ class MiddlewareTest extends AppTestCase
             return new Response();
         });
 
-        $this->app->add(function (ServerRequestInterface $request, DelegateInterface $delegate) {
-            $response =  $delegate->process($request);
+        $this->app->add(function (ServerRequestInterface $request, RequestHandlerInterface $handler) {
+            $response =  $handler->handle($request);
 
             return $response->withHeader('x-foo', 'foo');
         }, '/foo');
 
-        $this->app->add(function (ServerRequestInterface $request, DelegateInterface $delegate) {
-            $response =  $delegate->process($request);
+        $this->app->add(function (ServerRequestInterface $request, RequestHandlerInterface $handler) {
+            $response =  $handler->handle($request);
 
             return $response->withHeader('x-bar', 'foo');
         }, '/bar');

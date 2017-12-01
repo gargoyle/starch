@@ -2,7 +2,7 @@
 
 namespace Starch\Tests\Unit\Middleware;
 
-use Interop\Http\ServerMiddleware\MiddlewareInterface;
+use Interop\Http\Server\MiddlewareInterface;
 use PHPUnit_Framework_MockObject_MockObject;
 use Starch\Middleware\StackItem;
 use PHPUnit\Framework\TestCase;

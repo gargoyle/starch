@@ -2,7 +2,7 @@
 
 namespace Starch\Tests\Unit\Middleware;
 
-use Interop\Http\ServerMiddleware\DelegateInterface;
+use Interop\Http\Server\RequestHandlerInterface;
 use Invoker\InvokerInterface;
 use PHPUnit_Framework_MockObject_MockObject;
 use Psr\Http\Message\ResponseInterface;
@@ -20,7 +20,7 @@ class DelegateTest extends TestCase
     private $item;
 
     /**
-     * @var DelegateInterface|PHPUnit_Framework_MockObject_MockObject
+     * @var RequestHandlerInterface|PHPUnit_Framework_MockObject_MockObject
      */
     private $next;
 
@@ -37,7 +37,7 @@ class DelegateTest extends TestCase
     public function setUp()
     {
         $this->item = $this->createMock(StackItem::class);
-        $this->next = $this->createMock(DelegateInterface::class);
+        $this->next = $this->createMock(RequestHandlerInterface::class);
         $this->invoker = $this->createMock(InvokerInterface::class);
         $this->request = $this->createMock(ServerRequestInterface::class);
         $this->request->method('getAttribute')
@@ -51,12 +51,12 @@ class DelegateTest extends TestCase
             ->willReturn(false);
 
         $this->next->expects($this->once())
-            ->method('process')
+            ->method('handle')
             ->willReturn($this->createMock(ResponseInterface::class));
 
         $delegate = new Delegate($this->item, $this->next, $this->invoker);
 
-        $delegate->process($this->request);
+        $delegate->handle($this->request);
     }
 
     public function testCallsMiddlewareIfItemSaysSo()
@@ -66,7 +66,7 @@ class DelegateTest extends TestCase
             ->willReturn(true);
 
         $this->next->expects($this->never())
-            ->method('process');
+            ->method('handle');
 
         $this->invoker->expects($this->once())
             ->method('call')
@@ -74,6 +74,6 @@ class DelegateTest extends TestCase
 
         $delegate = new Delegate($this->item, $this->next, $this->invoker);
 
-        $delegate->process($this->request);
+        $delegate->handle($this->request);
     }
 }

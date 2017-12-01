@@ -2,7 +2,7 @@
 
 namespace Starch\Middleware;
 
-use Interop\Http\ServerMiddleware\DelegateInterface;
+use Interop\Http\Server\RequestHandlerInterface;
 use Invoker\InvokerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -45,7 +45,7 @@ class Stack implements StackInterface
     {
         $delegate = $this->getDelegate();
 
-        return $delegate->process($request);
+        return $delegate->handle($request);
     }
 
     /**
@@ -54,9 +54,9 @@ class Stack implements StackInterface
      * If the stack is empty, it will return a Delegate that will throw an exception
      * The last item in the stack must not call the next Delegate but rather just return a Response on it's own
      *
-     * @return DelegateInterface
+     * @return RequestHandlerInterface
      */
-    private function getDelegate(): DelegateInterface
+    private function getDelegate(): RequestHandlerInterface
     {
         $item = array_shift($this->items);
 
