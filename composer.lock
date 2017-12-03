@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "151959ac49981048f65bd32a219bc163",
+    "content-hash": "42c07d3eec2baba85f1894dd2bd91ad7",
     "packages": [
         {
             "name": "container-interop/container-interop",
@@ -39,21 +39,24 @@
         },
         {
             "name": "http-interop/http-server-handler",
-            "version": "1.0.0",
+            "version": "1.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/http-interop/http-server-handler.git",
-                "reference": "931a6495fb1b6005c9b4abc4dd11fb12a2a8103b"
+                "reference": "06c8bd8100a66320de306552d323e51bdd8aa7a8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/http-interop/http-server-handler/zipball/931a6495fb1b6005c9b4abc4dd11fb12a2a8103b",
-                "reference": "931a6495fb1b6005c9b4abc4dd11fb12a2a8103b",
+                "url": "https://api.github.com/repos/http-interop/http-server-handler/zipball/06c8bd8100a66320de306552d323e51bdd8aa7a8",
+                "reference": "06c8bd8100a66320de306552d323e51bdd8aa7a8",
                 "shasum": ""
             },
             "require": {
                 "php": ">=7.0",
                 "psr/http-message": "^1.0"
+            },
+            "conflict": {
+                "http-interop/http-middleware": ">=0.5"
             },
             "type": "library",
             "extra": {
@@ -87,29 +90,26 @@
                 "response",
                 "server"
             ],
-            "time": "2017-11-09T18:35:22+00:00"
+            "time": "2017-11-10T15:32:10+00:00"
         },
         {
             "name": "http-interop/http-server-middleware",
-            "version": "1.0.1",
+            "version": "1.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/http-interop/http-server-middleware.git",
-                "reference": "e605a7f47a002e857a3b9bb992010e2f859e4560"
+                "reference": "23278152afcedba38779614cc8eec898731c5734"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/http-interop/http-server-middleware/zipball/e605a7f47a002e857a3b9bb992010e2f859e4560",
-                "reference": "e605a7f47a002e857a3b9bb992010e2f859e4560",
+                "url": "https://api.github.com/repos/http-interop/http-server-middleware/zipball/23278152afcedba38779614cc8eec898731c5734",
+                "reference": "23278152afcedba38779614cc8eec898731c5734",
                 "shasum": ""
             },
             "require": {
                 "http-interop/http-server-handler": "^1.0",
                 "php": ">=7.0",
                 "psr/http-message": "^1.0"
-            },
-            "replace": {
-                "http-interop/http-middleware": ">=0.5"
             },
             "type": "library",
             "extra": {
@@ -142,7 +142,7 @@
                 "request",
                 "response"
             ],
-            "time": "2017-11-09T21:42:30+00:00"
+            "time": "2017-11-09T18:44:37+00:00"
         },
         {
             "name": "jeremeamia/SuperClosure",
@@ -421,16 +421,16 @@
         },
         {
             "name": "php-di/php-di",
-            "version": "6.0.0-alpha4",
+            "version": "6.0.0-beta1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHP-DI/PHP-DI.git",
-                "reference": "5540f7166b11e507e85759be10cf9021efe44a46"
+                "reference": "93ac9f1435c298efe5d97c4537096371b79e839c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHP-DI/PHP-DI/zipball/5540f7166b11e507e85759be10cf9021efe44a46",
-                "reference": "5540f7166b11e507e85759be10cf9021efe44a46",
+                "url": "https://api.github.com/repos/PHP-DI/PHP-DI/zipball/93ac9f1435c298efe5d97c4537096371b79e839c",
+                "reference": "93ac9f1435c298efe5d97c4537096371b79e839c",
                 "shasum": ""
             },
             "require": {
@@ -446,9 +446,10 @@
             },
             "require-dev": {
                 "doctrine/annotations": "~1.2",
-                "mnapoli/phpunit-easymock": "~0.2.3",
+                "friendsofphp/php-cs-fixer": "^2.4",
+                "mnapoli/phpunit-easymock": "~1.0",
                 "ocramius/proxy-manager": "~2.0.2",
-                "phpunit/phpunit": "~5.7"
+                "phpunit/phpunit": "~6.4"
             },
             "suggest": {
                 "doctrine/annotations": "Install it if you want to use annotations (version ~1.2)",
@@ -470,11 +471,15 @@
             "description": "The dependency injection container for humans",
             "homepage": "http://php-di.org/",
             "keywords": [
+                "PSR-11",
                 "container",
+                "container-interop",
                 "dependency injection",
-                "di"
+                "di",
+                "ioc",
+                "psr11"
             ],
-            "time": "2017-07-16T11:36:48+00:00"
+            "time": "2017-12-03T08:23:55+00:00"
         },
         {
             "name": "php-di/phpdoc-reader",
@@ -1623,16 +1628,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "6.5.1",
+            "version": "6.5.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "8eea3cfbfe3c8363f8111e24569bdb6ead71ea6e"
+                "reference": "24b708f2fd725bcef1c8153b366043381aa324f2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/8eea3cfbfe3c8363f8111e24569bdb6ead71ea6e",
-                "reference": "8eea3cfbfe3c8363f8111e24569bdb6ead71ea6e",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/24b708f2fd725bcef1c8153b366043381aa324f2",
+                "reference": "24b708f2fd725bcef1c8153b366043381aa324f2",
                 "shasum": ""
             },
             "require": {
@@ -1650,7 +1655,7 @@
                 "phpunit/php-file-iterator": "^1.4.3",
                 "phpunit/php-text-template": "^1.2.1",
                 "phpunit/php-timer": "^1.0.9",
-                "phpunit/phpunit-mock-objects": "^5.0",
+                "phpunit/phpunit-mock-objects": "^5.0.4",
                 "sebastian/comparator": "^2.1",
                 "sebastian/diff": "^2.0",
                 "sebastian/environment": "^3.1",
@@ -1703,20 +1708,20 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2017-12-01T09:57:23+00:00"
+            "time": "2017-12-02T05:36:24+00:00"
         },
         {
             "name": "phpunit/phpunit-mock-objects",
-            "version": "5.0.3",
+            "version": "5.0.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit-mock-objects.git",
-                "reference": "a58b8fc03ca12d8bf6122ea942bc72c99c7cda4a"
+                "reference": "16b50f4167e5e85e81ca8a3dd105d0a5fd32009a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit-mock-objects/zipball/a58b8fc03ca12d8bf6122ea942bc72c99c7cda4a",
-                "reference": "a58b8fc03ca12d8bf6122ea942bc72c99c7cda4a",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit-mock-objects/zipball/16b50f4167e5e85e81ca8a3dd105d0a5fd32009a",
+                "reference": "16b50f4167e5e85e81ca8a3dd105d0a5fd32009a",
                 "shasum": ""
             },
             "require": {
@@ -1762,7 +1767,7 @@
                 "mock",
                 "xunit"
             ],
-            "time": "2017-12-01T16:12:08+00:00"
+            "time": "2017-12-02T05:31:19+00:00"
         },
         {
             "name": "sebastian/code-unit-reverse-lookup",
@@ -2415,7 +2420,7 @@
         }
     ],
     "aliases": [],
-    "minimum-stability": "alpha",
+    "minimum-stability": "beta",
     "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
