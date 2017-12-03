@@ -29,7 +29,7 @@ Create a new App, define routes, add middlewares and run the app.
 ```php
 <?php
 
-use Interop\Http\ServerMiddleware\DelegateInterface;
+use Interop\Http\Server\RequestHandlerInterface;
 use Starch\App;
 use Starch\Router\RouterMiddleware;
 use Zend\Diactoros\Response;
@@ -51,14 +51,14 @@ $app->get('/hello/{name}', function($request, $name) {
     return $response;
 });
 
-$app->add(function($request, DelegateInterface $next) {
-    $response = $next->process($request);
+$app->add(function($request, RequestHandlerInterface $next) {
+    $response = $next->handle($request);
     $response->getBody()->write(', world! ');
 
     return $response;
 });
-$app->add(function($request, DelegateInterface $delegate) {
-    $response = $delegate->process($request);
+$app->add(function($request, RequestHandlerInterface $delegate) {
+    $response = $delegate->handle($request);
 
     $response->getBody()->write(' How are you?');
 
@@ -97,7 +97,6 @@ You must add the following services to your container:
 
 - `Invoker\InvokerInterface`: [PHP-DI/Invoker](https://github.com/PHP-DI/Invoker) is recommended.
 - `Zend\Diactoros\Response\EmitterInterface`: The built in `Zend\Diactoros\Response\SapiEmitter` is recommended.
-- `Starch\Middleware\StackInterface`: Should be an instance of `Starch\Middleware\Stack`, unless you decide to override this.
 
 Aditionally, if your container does not support auto-wiring, the following should be defined as an instance of themselves as well:
 

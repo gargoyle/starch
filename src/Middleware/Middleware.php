@@ -2,13 +2,12 @@
 
 namespace Starch\Middleware;
 
-use Interop\Http\Server\MiddlewareInterface;
 use Starch\Router\Route;
 
-class StackItem
+class Middleware
 {
     /**
-     * @var MiddlewareInterface
+     * @var mixed
      */
     private $middleware;
 
@@ -17,22 +16,22 @@ class StackItem
      */
     private $pathConstraint;
 
-    public function __construct(MiddlewareInterface $middleware, string $pathConstraint = null)
+    public function __construct($middleware, string $pathConstraint = null)
     {
         $this->middleware = $middleware;
         $this->pathConstraint = $pathConstraint;
     }
 
     /**
-     * @return MiddlewareInterface
+     * @return mixed
      */
-    public function getMiddleware(): MiddlewareInterface
+    public function getMiddleware()
     {
         return $this->middleware;
     }
 
     /**
-     * Checks if this item should be executed for a given request
+     * Checks if this item should be executed for a given Route
      *
      * @param Route $route
      *

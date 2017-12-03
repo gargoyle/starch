@@ -3,18 +3,17 @@
 namespace Starch\Tests\Unit\Middleware;
 
 use Interop\Http\Server\MiddlewareInterface;
-use PHPUnit_Framework_MockObject_MockObject;
-use Starch\Middleware\StackItem;
 use PHPUnit\Framework\TestCase;
+use PHPUnit_Framework_MockObject_MockObject;
+use Starch\Middleware\Middleware;
 use Starch\Router\Route;
 
-class StackItemTest extends TestCase
+class MiddlewareTest extends TestCase
 {
     /**
      * @var MiddlewareInterface|PHPUnit_Framework_MockObject_MockObject
      */
     private $middleware;
-
     /**
      * @var Route|PHPUnit_Framework_MockObject_MockObject
      */
@@ -30,9 +29,7 @@ class StackItemTest extends TestCase
     {
         $this->route->expects($this->never())
             ->method('getPath');
-
-        $item = new StackItem($this->middleware);
-
+        $item = new Middleware($this->middleware);
         $this->assertTrue($item->executeFor($this->route));
     }
 
@@ -42,11 +39,10 @@ class StackItemTest extends TestCase
     public function testExecutesWithConstraint(string $path, string $constraint, bool $result)
     {
         $this->route->expects($this->once())
-                      ->method('getPath')
+            ->method('getPath')
             ->willReturn($path);
 
-        $item = new StackItem($this->middleware, $constraint);
-
+        $item = new Middleware($this->middleware, $constraint);
         $this->assertEquals($result, $item->executeFor($this->route));
     }
 

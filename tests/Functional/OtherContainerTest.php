@@ -12,8 +12,6 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Starch\App;
 use Starch\Exception\ExceptionHandler;
-use Starch\Middleware\Stack;
-use Starch\Middleware\StackInterface;
 use Starch\Router\Router;
 use Starch\Router\RouterMiddleware;
 use Starch\Tests\AppTestCase;
@@ -50,7 +48,6 @@ class OtherContainer implements ContainerInterface
     public function __construct()
     {
         $this->services[InvokerInterface::class] = new Invoker(null, $this);
-        $this->services[StackInterface::class] = new Stack($this->services[InvokerInterface::class]);
         $this->services[Router::class] = new Router();
         $this->services[ExceptionHandler::class] = new ExceptionHandler();
         $this->services[RouterMiddleware::class] = new RouterMiddleware($this->services[InvokerInterface::class]);
