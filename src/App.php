@@ -6,16 +6,14 @@ use Closure;
 use DI\Container;
 use DI\ContainerBuilder;
 use Interop\Http\Server\MiddlewareInterface;
-use InvalidArgumentException;
 use Invoker\InvokerInterface;
+use mindplay\middleman\ContainerResolver;
+use mindplay\middleman\Dispatcher;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Starch\Exception\ExceptionHandler;
-use Starch\Middleware\ClosureMiddleware;
-use Starch\Middleware\Stack;
-use Starch\Middleware\StackInterface;
-use Starch\Middleware\StackItem;
+use Starch\Middleware\Middleware;
 use Starch\Router\Router;
 use Zend\Diactoros\Response\EmitterInterface;
 use Zend\Diactoros\Response\SapiEmitter;
@@ -29,6 +27,11 @@ class App
      * @var ContainerInterface
      */
     private $container;
+
+    /**
+     * @var Middleware[]
+     */
+    private $middleware;
 
     public function __construct(ContainerInterface $container = null)
     {
@@ -51,8 +54,6 @@ class App
             EmitterInterface::class => autowire(SapiEmitter::class),
 
             InvokerInterface::class => get(Container::class),
-
-            StackInterface::class => autowire(Stack::class),
         ]);
     }
 
@@ -65,7 +66,7 @@ class App
     }
 
     /**
-     * Add middleware to the stack
+     * Add all middleware to one array, it will be filtered based on the route once a request is being processed.
      *
      * @param Closure|MiddlewareInterface|string $middleware
      * @param string|null $pathConstraint
@@ -74,19 +75,7 @@ class App
      */
     public function add($middleware, string $pathConstraint = null): void
     {
-        if ($middleware instanceof Closure) {
-            $middleware = new ClosureMiddleware($middleware);
-        }
-
-        if (is_string($middleware)) {
-            $middleware = $this->getContainer()->get($middleware);
-        }
-
-        if (!$middleware instanceof MiddlewareInterface) {
-            throw new InvalidArgumentException(sprintf("Middleware must be instance of MiddlewareInterface (given '%s').", get_class($middleware)));
-        }
-
-        $this->getContainer()->get(StackInterface::class)->add(new StackItem($middleware, $pathConstraint));
+        $this->middleware[] = new Middleware($middleware, $pathConstraint);
     }
 
     /********************************************************************************
@@ -209,7 +198,19 @@ class App
         try {
             $request = $this->getContainer()->get(Router::class)->dispatch($request);
 
-            return $this->getContainer()->get(StackInterface::class)->resolve($request);
+            $filteredMiddleware = [];
+            foreach ($this->middleware as $middleware) {
+                if ($middleware->executeFor($request->getAttribute('route'))) {
+                    $filteredMiddleware[] = $middleware->getMiddleware();
+                }
+            }
+
+            $dispatcher = new Dispatcher(
+                $filteredMiddleware,
+                new ContainerResolver($this->container)
+            );
+
+            return $dispatcher->dispatch($request);
         } catch (\Exception $e) {
             return $this->getContainer()->get(ExceptionHandler::class)->handle($e);
         }

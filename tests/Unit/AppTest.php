@@ -8,7 +8,6 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Starch\App;
 use PHPUnit\Framework\TestCase;
-use Starch\Middleware\StackInterface;
 use Starch\Router\Route;
 use Starch\Router\Router;
 
@@ -22,60 +21,6 @@ class AppTest extends TestCase
     public function setUp()
     {
         $this->app = new App();
-    }
-
-    public function testAllowsStringAsMiddleware()
-    {
-        $this->app->add(StubMiddleware::class);
-
-        $this->assertStackHasMiddleware();
-    }
-
-    public function testAllowInstanceAsMiddleware()
-    {
-        $this->app->add(new StubMiddleware());
-
-        $this->assertStackHasMiddleware();
-    }
-
-    public function testAllowAnonymousClassAsMiddleware()
-    {
-        $this->app->add(new class implements MiddlewareInterface
-        {
-            public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
-            {
-                return $handler->handle($request);
-            }
-        });
-
-        $this->assertStackHasMiddleware();
-    }
-
-    /**
-     * @expectedException \InvalidArgumentException
-     */
-    public function testStringMustBeMiddlewareInterface()
-    {
-        $this->app->add(Stub::class);
-    }
-
-    /**
-     * @expectedException \InvalidArgumentException
-     */
-    public function testInstanceMustBeMiddlewareInterface()
-    {
-        $this->app->add(new Stub());
-    }
-
-    private function assertStackHasMiddleware()
-    {
-        $stack = $this->app->getContainer()->get(StackInterface::class);
-
-        $refl = new \ReflectionClass($stack);
-        $items = $refl->getProperty('items');
-        $items->setAccessible(true);
-
-        $this->assertCount(1,$items->getValue($stack));
     }
 
     public function testAddGETRoute()

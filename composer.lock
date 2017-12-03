@@ -4,39 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "42c07d3eec2baba85f1894dd2bd91ad7",
+    "content-hash": "6e5087a7b2c92c901ea475be46e06f5a",
     "packages": [
-        {
-            "name": "container-interop/container-interop",
-            "version": "1.2.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/container-interop/container-interop.git",
-                "reference": "79cbf1341c22ec75643d841642dd5d6acd83bdb8"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/container-interop/container-interop/zipball/79cbf1341c22ec75643d841642dd5d6acd83bdb8",
-                "reference": "79cbf1341c22ec75643d841642dd5d6acd83bdb8",
-                "shasum": ""
-            },
-            "require": {
-                "psr/container": "^1.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Interop\\Container\\": "src/Interop/Container/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "description": "Promoting the interoperability of container objects (DIC, SL, etc.)",
-            "homepage": "https://github.com/container-interop/container-interop",
-            "time": "2017-02-14T19:40:03+00:00"
-        },
         {
             "name": "http-interop/http-server-handler",
             "version": "1.0.1",
@@ -204,24 +173,18 @@
         },
         {
             "name": "mindplay/middleman",
-            "version": "3.0.0",
+            "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/mindplay-dk/middleman.git",
-                "reference": "1e737e97b19fd284f53b9480b0726ae084f56808"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/mindplay-dk/middleman/zipball/1e737e97b19fd284f53b9480b0726ae084f56808",
-                "reference": "1e737e97b19fd284f53b9480b0726ae084f56808",
-                "shasum": ""
+                "url": "https://github.com/Brammm-forks/middleman",
+                "reference": "a263dfba64de26ebd0541e974e8815df6bcdf050"
             },
             "require": {
-                "container-interop/container-interop": "^1.1",
                 "http-interop/http-server-handler": "^1.0",
                 "http-interop/http-server-middleware": "^1.0",
                 "mindplay/readable": "^1",
                 "php": ">=7.0",
+                "psr/container": "^1.0",
                 "psr/http-message": "^1.0"
             },
             "require-dev": {
@@ -235,7 +198,6 @@
                     "mindplay\\middleman\\": "src/"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "LGPL-3.0+"
             ],
@@ -246,7 +208,7 @@
                 }
             ],
             "description": "PSR-7 middleware dispatcher. Let's stop trying to make this complicated.",
-            "time": "2017-11-29T12:14:37+00:00"
+            "time": "2017-12-03 16:32:19"
         },
         {
             "name": "mindplay/readable",
@@ -2421,7 +2383,9 @@
     ],
     "aliases": [],
     "minimum-stability": "beta",
-    "stability-flags": [],
+    "stability-flags": {
+        "mindplay/middleman": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],

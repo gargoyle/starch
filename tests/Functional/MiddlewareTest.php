@@ -45,13 +45,13 @@ class MiddlewareTest extends AppTestCase
         });
 
         $this->app->add(function (ServerRequestInterface $request, RequestHandlerInterface $handler) {
-            $response =  $handler->handle($request);
+            $response = $handler->handle($request);
 
             return $response->withHeader('x-foo', 'foo');
         }, '/foo');
 
         $this->app->add(function (ServerRequestInterface $request, RequestHandlerInterface $handler) {
-            $response =  $handler->handle($request);
+            $response = $handler->handle($request);
 
             return $response->withHeader('x-bar', 'foo');
         }, '/bar');
