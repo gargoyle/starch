@@ -26,12 +26,13 @@
     },
     "require-dev": {
         "guzzlehttp/guzzle": "^6.3",
+        "php-di/invoker": "^2.0",
         "phpunit/phpunit": "^6.1"
     },
     "suggest": {
+        "php-di/invoker": "Required if you want to use the provided RouterMiddleware",
         "php-di/php-di": "A very easy to configure PSR-11 container"
     },
-    "minimum-stability": "beta",
     "autoload": {
         "psr-4": {
             "Starch\\": "src/"

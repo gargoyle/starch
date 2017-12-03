@@ -8,13 +8,14 @@ use Interop\Http\Server\RequestHandlerInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Starch\App;
 use Starch\Router\RouterMiddleware;
+use Starch\Tests\TestContainer;
 use Zend\Diactoros\Response\TextResponse;
 
 class IntegrationTest extends App
 {
     public function __construct()
     {
-        parent::__construct();
+        parent::__construct(new TestContainer());
 
         $this->get('/', function() {
             return new TextResponse('Hello, world!');

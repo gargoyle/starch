@@ -19,7 +19,7 @@ class AppTestCase extends TestCase
      */
     public function setUp()
     {
-        $this->app = new App();
+        $this->app = new App(new TestContainer());
     }
 
     /**

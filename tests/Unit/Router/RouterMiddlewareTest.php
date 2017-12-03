@@ -4,11 +4,11 @@ namespace Starch\Tests\Unit\Router;
 
 use Interop\Http\Server\RequestHandlerInterface;
 use Invoker\InvokerInterface;
+use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Starch\Router\Route;
 use Starch\Router\RouterMiddleware;
-use PHPUnit\Framework\TestCase;
 
 class RouterMiddlewareTest extends TestCase
 {

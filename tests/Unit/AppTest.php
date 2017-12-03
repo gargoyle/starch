@@ -2,14 +2,11 @@
 
 namespace Starch\Tests\Unit;
 
-use Interop\Http\Server\MiddlewareInterface;
-use Interop\Http\Server\RequestHandlerInterface;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
-use Starch\App;
 use PHPUnit\Framework\TestCase;
+use Starch\App;
 use Starch\Router\Route;
 use Starch\Router\Router;
+use Starch\Tests\TestContainer;
 
 class AppTest extends TestCase
 {
@@ -20,7 +17,7 @@ class AppTest extends TestCase
 
     public function setUp()
     {
-        $this->app = new App();
+        $this->app = new App(new TestContainer());
     }
 
     public function testAddGETRoute()
@@ -72,16 +69,5 @@ class AppTest extends TestCase
         $this->assertCount(1,$routes);
         $this->assertEquals('/', $routes[0]->getPath());
         $this->assertEquals([$method], $routes[0]->getMethods());
-    }
-}
-
-class Stub {
-}
-
-class StubMiddleware implements MiddlewareInterface
-{
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
-    {
-        return $handler->handle($request);
     }
 }

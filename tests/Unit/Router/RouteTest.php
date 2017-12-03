@@ -2,8 +2,8 @@
 
 namespace Starch\Tests\Unit\Router;
 
-use Starch\Router\Route;
 use PHPUnit\Framework\TestCase;
+use Starch\Router\Route;
 
 class RouteTest extends TestCase
 {
