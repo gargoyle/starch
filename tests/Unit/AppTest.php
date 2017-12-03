@@ -3,7 +3,7 @@
 namespace Starch\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
-use Starch\App;
+use Starch\Application;
 use Starch\Router\Route;
 use Starch\Router\Router;
 use Starch\Tests\TestContainer;
@@ -11,13 +11,13 @@ use Starch\Tests\TestContainer;
 class AppTest extends TestCase
 {
     /**
-     * @var App
+     * @var Application
      */
     private $app;
 
     public function setUp()
     {
-        $this->app = new App(new TestContainer());
+        $this->app = new Application(new TestContainer());
     }
 
     public function testAddGETRoute()

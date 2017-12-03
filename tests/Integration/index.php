@@ -6,12 +6,12 @@ require_once('../../vendor/autoload.php');
 
 use Interop\Http\Server\RequestHandlerInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Starch\App;
+use Starch\Application;
 use Starch\Router\RouterMiddleware;
 use Starch\Tests\TestContainer;
 use Zend\Diactoros\Response\TextResponse;
 
-class IntegrationTest extends App
+class IntegrationTest extends Application
 {
     public function __construct()
     {

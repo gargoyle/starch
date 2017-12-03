@@ -16,7 +16,7 @@ use Starch\Router\Router;
 use Zend\Diactoros\Response\EmitterInterface;
 use Zend\Diactoros\ServerRequestFactory;
 
-class App
+class Application
 {
     /**
      * @var ContainerInterface
