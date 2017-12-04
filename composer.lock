@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "9bc26361447a0d53ea233ed13465a753",
+    "content-hash": "6aa8482baabdaafd92c0531645e84305",
     "packages": [
         {
             "name": "http-interop/http-server-handler",
@@ -115,11 +115,17 @@
         },
         {
             "name": "mindplay/middleman",
-            "version": "dev-master",
+            "version": "3.0.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/Brammm-forks/middleman",
-                "reference": "a263dfba64de26ebd0541e974e8815df6bcdf050"
+                "url": "https://github.com/mindplay-dk/middleman.git",
+                "reference": "efa2f70dffc7d5823900a3d86d4d04633d17054f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mindplay-dk/middleman/zipball/efa2f70dffc7d5823900a3d86d4d04633d17054f",
+                "reference": "efa2f70dffc7d5823900a3d86d4d04633d17054f",
+                "shasum": ""
             },
             "require": {
                 "http-interop/http-server-handler": "^1.0",
@@ -140,6 +146,7 @@
                     "mindplay\\middleman\\": "src/"
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "LGPL-3.0+"
             ],
@@ -150,7 +157,7 @@
                 }
             ],
             "description": "PSR-7 middleware dispatcher. Let's stop trying to make this complicated.",
-            "time": "2017-12-03 16:32:19"
+            "time": "2017-12-04T10:00:27+00:00"
         },
         {
             "name": "mindplay/readable",
@@ -2067,9 +2074,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "mindplay/middleman": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],

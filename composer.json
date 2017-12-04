@@ -10,16 +10,10 @@
             "homepage": "https://github.com/Brammm"
         }
     ],
-    "repositories": [
-        {
-            "type": "git",
-            "url": "https://github.com/Brammm-forks/middleman"
-        }
-    ],
     "require": {
         "http-interop/http-server-handler": "^1.0",
         "http-interop/http-server-middleware": "^1.0",
-        "mindplay/middleman": "dev-master",
+        "mindplay/middleman": "^3.0.1",
         "nikic/fast-route": "^1.2",
         "psr/container": "^1.0",
         "zendframework/zend-diactoros": "^1.4"
