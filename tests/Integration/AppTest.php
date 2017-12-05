@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 class AppTest extends TestCase
 {
     /**
-     * @covers \Starch\App::run()
+     * @covers \Starch\Application::run()
      */
     public function testRunApp()
     {

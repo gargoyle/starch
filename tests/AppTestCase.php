@@ -4,13 +4,13 @@ namespace Starch\Tests;
 
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
-use Starch\App;
+use Starch\Application;
 use Zend\Diactoros\ServerRequestFactory;
 
 class AppTestCase extends TestCase
 {
     /**
-     * @var App
+     * @var Application
      */
     protected $app;
 
@@ -19,7 +19,7 @@ class AppTestCase extends TestCase
      */
     public function setUp()
     {
-        $this->app = new App();
+        $this->app = new Application(new TestContainer());
     }
 
     /**

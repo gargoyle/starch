@@ -3,25 +3,20 @@
 namespace Starch;
 
 use Closure;
-use DI\Container;
-use DI\ContainerBuilder;
 use Interop\Http\Server\MiddlewareInterface;
-use Invoker\InvokerInterface;
 use mindplay\middleman\ContainerResolver;
 use mindplay\middleman\Dispatcher;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use RuntimeException;
 use Starch\Exception\ExceptionHandler;
 use Starch\Middleware\Middleware;
 use Starch\Router\Router;
 use Zend\Diactoros\Response\EmitterInterface;
-use Zend\Diactoros\Response\SapiEmitter;
 use Zend\Diactoros\ServerRequestFactory;
-use function DI\autowire;
-use function DI\get;
 
-class App
+class Application
 {
     /**
      * @var ContainerInterface
@@ -33,28 +28,10 @@ class App
      */
     private $middleware;
 
-    public function __construct(ContainerInterface $container = null)
+    public function __construct(ContainerInterface $container)
     {
+        $this->verifyContainer($container);
         $this->container = $container;
-        if (null === $container) {
-            $this->buildContainer();
-        }
-    }
-
-    /**
-     * Override this method to add extra definitions to your app (don't forget to call parent::configureContainer)
-     * Or add your own implementations of the definitions below
-     * IMPORTANT: The definitions defined here are required for the app to run successfully
-     *
-     * @return void
-     */
-    public function configureContainer(ContainerBuilder $builder): void
-    {
-        $builder->addDefinitions([
-            EmitterInterface::class => autowire(SapiEmitter::class),
-
-            InvokerInterface::class => get(Container::class),
-        ]);
     }
 
     /**
@@ -185,8 +162,8 @@ class App
 
     /**
      * Dispatch the request to the router
-     * Add the RouterMiddleware as the last piece of the stack
-     * Send the Request through the stack
+     * Filter the middleware according to the route
+     * Dispatch routed request to middleman to process middleware
      * Pass exceptions to the exception handler
      *
      * @param  ServerRequestInterface $request
@@ -207,7 +184,7 @@ class App
 
             $dispatcher = new Dispatcher(
                 $filteredMiddleware,
-                new ContainerResolver($this->container)
+                new ContainerResolver($this->getContainer())
             );
 
             return $dispatcher->dispatch($request);
@@ -221,18 +198,25 @@ class App
      *******************************************************************************/
 
     /**
-     * Build the container with a couple base service
-     *
-     * These base services can be overridden in self::configureContainer
+     * Verify that all dependencies required by Starch are present
      *
      * @return void
      */
-    private function buildContainer(): void
+    private function verifyContainer(ContainerInterface $container): void
     {
-        $builder = new ContainerBuilder();
+        $requiredDependencies = [
+            EmitterInterface::class,
+            ExceptionHandler::class,
+            Router::class,
+        ];
 
-        $this->configureContainer($builder);
-
-        $this->container = $builder->build();
+        foreach ($requiredDependencies as $requiredDependency) {
+            if (!$container->has($requiredDependency)) {
+                throw new RuntimeException(sprintf(
+                    'Dependency "%s" needs to be available in your provided container.',
+                    $requiredDependency
+                ));
+            }
+        }
     }
 }

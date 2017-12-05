@@ -2,8 +2,8 @@
 
 namespace Starch\Tests\Unit\Exception;
 
-use Starch\Exception\NotFoundHttpException;
 use PHPUnit\Framework\TestCase;
+use Starch\Exception\NotFoundHttpException;
 
 class NotFoundHttpExceptionTest extends TestCase
 {

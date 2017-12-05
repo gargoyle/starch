@@ -2,10 +2,10 @@
 
 namespace Starch\Tests\Unit\Router;
 
+use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 use Starch\Router\Route;
 use Starch\Router\Router;
-use PHPUnit\Framework\TestCase;
 use Zend\Diactoros\ServerRequest;
 
 class RouterTest extends TestCase
