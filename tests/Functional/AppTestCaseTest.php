@@ -5,15 +5,14 @@ namespace Starch\Tests\Functional;
 use Psr\Http\Message\ServerRequestInterface;
 use Starch\Router\RouterMiddleware;
 use Starch\Tests\AppTestCase;
-use Zend\Diactoros\Response;
+use Zend\Diactoros\Response\TextResponse;
 
 class AppTestCaseTest extends AppTestCase
 {
     public function testTestCaseCanSendPost()
     {
         $this->app->post('/', function(ServerRequestInterface $request) {
-            $response = new Response();
-            $response->getBody()->write($request->getParsedBody()['name']);
+            $response = new TextResponse($request->getParsedBody()['name']);
 
             return $response;
         });
