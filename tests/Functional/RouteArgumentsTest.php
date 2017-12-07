@@ -2,8 +2,9 @@
 
 namespace Starch\Tests\Functional;
 
+use Interop\Http\Server\RequestHandlerInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Starch\Router\RouterMiddleware;
+use Psr\Http\Message\ResponseInterface;
 use Starch\Tests\AppTestCase;
 use Zend\Diactoros\Response\TextResponse;
 
@@ -12,13 +13,14 @@ class RouteArgumentsTest extends AppTestCase
     public function setUp()
     {
         parent::setUp();
-        $this->app->add(RouterMiddleware::class);
     }
 
     public function testSetsRequest()
     {
-        $this->app->get('/', function(ServerRequestInterface $request) {
-            return new TextResponse((string)$request->getUri());
+        $this->app->get('/', new class implements RequestHandlerInterface {
+            public function handle(ServerRequestInterface $request): ResponseInterface {
+                return new TextResponse((string)$request->getUri());
+            }
         });
 
         $this->assertValidRequest('/', 'http://localhost/');
@@ -26,8 +28,10 @@ class RouteArgumentsTest extends AppTestCase
 
     public function testSetsRouteArguments()
     {
-        $this->app->get('/{name}', function(ServerRequestInterface $request, $name) {
-            return new TextResponse($request->getUri()->getHost() . '-' . $name);
+        $this->app->get('/{name}', new class implements RequestHandlerInterface {
+            public function handle(ServerRequestInterface $request): ResponseInterface {
+                return new TextResponse($request->getUri()->getHost() . '-' . $request->getAttribute('name'));
+            }
         });
 
         $this->assertValidRequest('/foo', 'localhost-foo');

@@ -51,7 +51,9 @@ class Router
         switch ($routeInfo[0]) {
             case Dispatcher::FOUND:
                 $route = $this->routes[$routeInfo[1]];
-                $route->setArguments($routeInfo[2]);
+                foreach ($routeInfo[2] as $key => $value) {
+                    $request = $request->withAttribute($key, $value);
+                }
 
                 return $request->withAttribute('route', $route);
             case Dispatcher::METHOD_NOT_ALLOWED:

@@ -51,7 +51,6 @@ class RouterTest extends TestCase
         $this->assertEquals('foo', $route->getHandler());
         $this->assertEquals(['GET'], $route->getMethods());
         $this->assertEquals('/', $route->getPath());
-        $this->assertEmpty($route->getArguments());
     }
 
     public function testAddsArguments()
@@ -63,9 +62,7 @@ class RouterTest extends TestCase
 
         $request = $router->dispatch($request);
 
-        $route = $request->getAttribute('route');
-
-        $this->assertEquals(['foo' => 'bar'], $route->getArguments());
+        $this->assertEquals('bar', $request->getAttribute('foo'));
     }
 
     /**

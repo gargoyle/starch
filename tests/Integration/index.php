@@ -4,10 +4,11 @@ namespace Starch\Tests\Integration;
 
 require_once('../../vendor/autoload.php');
 
+use Interop\Http\Server\MiddlewareInterface;
 use Interop\Http\Server\RequestHandlerInterface;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Starch\Application;
-use Starch\Router\RouterMiddleware;
 use Starch\Tests\TestContainer;
 use Zend\Diactoros\Response\TextResponse;
 
@@ -17,16 +18,20 @@ class IntegrationTest extends Application
     {
         parent::__construct(new TestContainer());
 
-        $this->get('/', function() {
-            return new TextResponse('Hello, world!');
+        $this->get('/', new class implements RequestHandlerInterface {
+            public function handle(ServerRequestInterface $request): ResponseInterface {
+                return new TextResponse('Hello, world!');
+            }
         });
 
-        $this->add(function (ServerRequestInterface $request, RequestHandlerInterface $handler) {
-            $response = $handler->handle($request);
+        $this->add(new class implements MiddlewareInterface {
+            public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
+            {
+                $response = $handler->handle($request);
 
-            return $response->withHeader('x-foo', 'bar');
+                return $response->withHeader('x-foo', 'bar');
+            }
         });
-        $this->add(RouterMiddleware::class);
     }
 }
 

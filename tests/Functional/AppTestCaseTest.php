@@ -2,8 +2,9 @@
 
 namespace Starch\Tests\Functional;
 
+use Interop\Http\Server\RequestHandlerInterface;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Starch\Router\RouterMiddleware;
 use Starch\Tests\AppTestCase;
 use Zend\Diactoros\Response;
 
@@ -11,13 +12,14 @@ class AppTestCaseTest extends AppTestCase
 {
     public function testTestCaseCanSendPost()
     {
-        $this->app->post('/', function(ServerRequestInterface $request) {
-            $response = new Response();
-            $response->getBody()->write($request->getParsedBody()['name']);
+        $this->app->post('/', new class implements RequestHandlerInterface {
+            public function handle(ServerRequestInterface $request): ResponseInterface {
+                $response = new Response();
+                $response->getBody()->write($request->getParsedBody()['name']);
 
-            return $response;
+                return $response;
+            }
         });
-        $this->app->add(RouterMiddleware::class);
 
         $response = $this->post('/', ['name' => 'foo']);
 

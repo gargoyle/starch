@@ -2,9 +2,10 @@
 
 namespace Starch\Tests\Functional;
 
+use Interop\Http\Server\MiddlewareInterface;
 use Interop\Http\Server\RequestHandlerInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Starch\Router\RouterMiddleware;
+use Psr\Http\Message\ResponseInterface;
 use Starch\Tests\AppTestCase;
 use Zend\Diactoros\Response;
 
@@ -12,25 +13,32 @@ class MiddlewareTest extends AppTestCase
 {
     public function testAcceptsMiddleware()
     {
-        $this->app->get('/', function(ServerRequestInterface $request) {
-            $response = new Response();
-            $response->getBody()->write($request->getHeader('x-name')[0]);
+        $this->app->get('/', new class implements RequestHandlerInterface {
+            public function handle(ServerRequestInterface $request): ResponseInterface {
+                $response = new Response();
+                $response->getBody()->write($request->getHeader('x-name')[0]);
 
-            return $response;
+                return $response;
+            }
         });
 
-        $this->app->add(function (ServerRequestInterface $request, RequestHandlerInterface $handler) {
-            $request = $request->withHeader('x-name', 'foo');
+        $this->app->add(new class implements MiddlewareInterface {
+            public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
+            {
+                $request = $request->withHeader('x-name', 'foo');
 
-            return $handler->handle($request);
+                return $handler->handle($request);
+            }
         });
-        $this->app->add(function (ServerRequestInterface $request, RequestHandlerInterface $handler) {
-            $response = $handler->handle($request);
-            $response->getBody()->write('bar');
+        $this->app->add(new class implements MiddlewareInterface {
+            public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
+            {
+                $response = $handler->handle($request);
+                $response->getBody()->write('bar');
 
-            return $response;
+                return $response;
+            }
         });
-        $this->app->add(RouterMiddleware::class);
 
         $response = $this->get('/');
 
@@ -40,22 +48,29 @@ class MiddlewareTest extends AppTestCase
 
     public function testConstrainsMiddlewareToPath()
     {
-        $this->app->get('/foo', function() {
-            return new Response();
+        $this->app->get('/foo', new class implements RequestHandlerInterface {
+            public function handle(ServerRequestInterface $request): ResponseInterface {
+                return new Response();
+            }
         });
 
-        $this->app->add(function (ServerRequestInterface $request, RequestHandlerInterface $handler) {
-            $response = $handler->handle($request);
+        $this->app->add(new class implements MiddlewareInterface {
+            public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
+            {
+                $response = $handler->handle($request);
 
-            return $response->withHeader('x-foo', 'foo');
+                return $response->withHeader('x-foo', 'foo');
+            }
         }, '/foo');
 
-        $this->app->add(function (ServerRequestInterface $request, RequestHandlerInterface $handler) {
-            $response = $handler->handle($request);
+        $this->app->add(new class implements MiddlewareInterface {
+            public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
+            {
+                $response = $handler->handle($request);
 
-            return $response->withHeader('x-bar', 'foo');
+                return $response->withHeader('x-bar', 'foo');
+            }
         }, '/bar');
-        $this->app->add(RouterMiddleware::class);
 
         $response = $this->get('/foo');
 

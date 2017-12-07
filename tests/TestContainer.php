@@ -9,7 +9,6 @@ use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Starch\Exception\ExceptionHandler;
 use Starch\Router\Router;
-use Starch\Router\RouterMiddleware;
 use Zend\Diactoros\Response\EmitterInterface;
 use Zend\Diactoros\Response\SapiEmitter;
 
@@ -26,7 +25,6 @@ class TestContainer implements ContainerInterface
         $this->dependencies[ExceptionHandler::class] = new ExceptionHandler();
         $this->dependencies[InvokerInterface::class] = new Invoker(null, $this);
         $this->dependencies[Router::class] = new Router();
-        $this->dependencies[RouterMiddleware::class] = new RouterMiddleware($this->dependencies[InvokerInterface::class]);
     }
 
     /**
