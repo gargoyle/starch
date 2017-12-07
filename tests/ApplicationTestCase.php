@@ -7,7 +7,7 @@ use Psr\Http\Message\ResponseInterface;
 use Starch\Application;
 use Zend\Diactoros\ServerRequestFactory;
 
-class AppTestCase extends TestCase
+class ApplicationTestCase extends TestCase
 {
     /**
      * @var Application

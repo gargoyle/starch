@@ -2,14 +2,14 @@
 
 namespace Starch\Tests\Functional;
 
+use Starch\Tests\ApplicationTestCase;
 use Interop\Http\Server\RequestHandlerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Starch\Tests\AppTestCase;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\Response\TextResponse;
 
-class AppTest extends AppTestCase
+class ApplicationTest extends ApplicationTestCase
 {
     public function testProcessesRequest()
     {

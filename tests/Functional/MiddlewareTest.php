@@ -6,10 +6,10 @@ use Interop\Http\Server\MiddlewareInterface;
 use Interop\Http\Server\RequestHandlerInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
-use Starch\Tests\AppTestCase;
+use Starch\Tests\ApplicationTestCase;
 use Zend\Diactoros\Response;
 
-class MiddlewareTest extends AppTestCase
+class MiddlewareTest extends ApplicationTestCase
 {
     public function testAcceptsMiddleware()
     {

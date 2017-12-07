@@ -5,10 +5,10 @@ namespace Starch\Tests\Functional;
 use Interop\Http\Server\RequestHandlerInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
-use Starch\Tests\AppTestCase;
+use Starch\Tests\ApplicationTestCase;
 use Zend\Diactoros\Response\TextResponse;
 
-class RouteArgumentsTest extends AppTestCase
+class RouteArgumentsTest extends ApplicationTestCase
 {
     public function setUp()
     {
