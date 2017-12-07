@@ -6,9 +6,9 @@ use FastRoute\Dispatcher;
 use FastRoute\RouteCollector;
 use Psr\Http\Message\ServerRequestInterface;
 use Starch\Exception\HttpException;
-use Starch\Exception\MethodNotAllowedException;
-use Starch\Exception\NotFoundHttpException;
 use function FastRoute\simpleDispatcher;
+use Starch\Request\MethodNotAllowedRequestHandler;
+use Starch\Request\NotFoundRequestHandler;
 
 class Router
 {
@@ -55,13 +55,18 @@ class Router
                     $request = $request->withAttribute($key, $value);
                 }
 
-                return $request->withAttribute('route', $route);
+                $request = $request->withAttribute('route', $route);
+                $requestHandler = $route->getHandler();
+                break;
             case Dispatcher::METHOD_NOT_ALLOWED:
-                throw new MethodNotAllowedException($request->getMethod(), $routeInfo[1]);
+                $requestHandler =  new MethodNotAllowedRequestHandler($routeInfo[1]);
+                break;
             case Dispatcher::NOT_FOUND:
             default:
-                throw new NotFoundHttpException(sprintf("Route '%s' not found.", $request->getUri()->getPath()));
+                $requestHandler =  new NotFoundRequestHandler();
         }
+
+        return $request->withAttribute('requestHandler', $requestHandler);
     }
 
     /**

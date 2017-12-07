@@ -190,7 +190,7 @@ class Application
 
             $dispatcher = new Stack(
                 $filteredMiddleware,
-                $request->getAttribute('route')->getHandler()
+                $request->getAttribute('requestHandler')
             );
 
             return $dispatcher->dispatch($request);

@@ -4,15 +4,14 @@ namespace Starch\Tests\Unit\Router;
 
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
+use Starch\Request\MethodNotAllowedRequestHandler;
+use Starch\Request\NotFoundRequestHandler;
 use Starch\Router\Route;
 use Starch\Router\Router;
 use Zend\Diactoros\ServerRequest;
 
 class RouterTest extends TestCase
 {
-    /**
-     * @expectedException \Starch\Exception\NotFoundHttpException
-     */
     public function testThrowsNotFoundException()
     {
         $router = new Router();
@@ -20,12 +19,11 @@ class RouterTest extends TestCase
 
         $request = $this->getRequest('GET', '/foo');
 
-        $router->dispatch($request);
+        $request = $router->dispatch($request);
+
+        $this->assertInstanceOf(NotFoundRequestHandler::class, $request->getAttribute('requestHandler'));
     }
 
-    /**
-     * @expectedException \Starch\Exception\MethodNotAllowedException
-     */
     public function testThrowsMethodNotAllowedException()
     {
         $router = new Router();
@@ -33,7 +31,9 @@ class RouterTest extends TestCase
 
         $request = $this->getRequest('POST', '/');
 
-        $router->dispatch($request);
+        $request = $router->dispatch($request);
+
+        $this->assertInstanceOf(MethodNotAllowedRequestHandler::class, $request->getAttribute('requestHandler'));
     }
 
     public function testAddsRouteToRequest()
