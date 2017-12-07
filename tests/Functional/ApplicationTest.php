@@ -3,11 +3,11 @@
 namespace Starch\Tests\Functional;
 
 use Starch\Router\RouterMiddleware;
-use Starch\Tests\AppTestCase;
+use Starch\Tests\ApplicationTestCase;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\Response\TextResponse;
 
-class AppTest extends AppTestCase
+class ApplicationTest extends ApplicationTestCase
 {
     public function testProcessesRequest()
     {

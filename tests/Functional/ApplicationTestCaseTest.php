@@ -4,10 +4,10 @@ namespace Starch\Tests\Functional;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Starch\Router\RouterMiddleware;
-use Starch\Tests\AppTestCase;
+use Starch\Tests\ApplicationTestCase;
 use Zend\Diactoros\Response\TextResponse;
 
-class AppTestCaseTest extends AppTestCase
+class ApplicationTestCaseTest extends ApplicationTestCase
 {
     public function testTestCaseCanSendPost()
     {

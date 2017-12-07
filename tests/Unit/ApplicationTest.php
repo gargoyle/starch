@@ -8,7 +8,7 @@ use Starch\Router\Route;
 use Starch\Router\Router;
 use Starch\Tests\TestContainer;
 
-class AppTest extends TestCase
+class ApplicationTest extends TestCase
 {
     /**
      * @var Application

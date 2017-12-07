@@ -5,7 +5,7 @@ namespace Starch\Tests\Integration;
 use GuzzleHttp\Client;
 use PHPUnit\Framework\TestCase;
 
-class AppTest extends TestCase
+class IntegrationTest extends TestCase
 {
     /**
      * @covers \Starch\Application::run()
