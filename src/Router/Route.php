@@ -2,6 +2,8 @@
 
 namespace Starch\Router;
 
+use Psr\Http\Server\RequestHandlerInterface;
+
 class Route
 {
     /**
@@ -15,7 +17,7 @@ class Route
     private $path;
 
     /**
-     * @var mixed
+     * @var RequestHandlerInterface|string
      */
     private $handler;
 

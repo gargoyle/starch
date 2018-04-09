@@ -7,6 +7,7 @@ use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use RuntimeException;
 use Starch\Exception\ExceptionHandler;
 use Starch\Middleware\Middleware;
@@ -70,7 +71,7 @@ class Application
      * Add a GET route
      *
      * @param string $path
-     * @param mixed $handler
+     * @param RequestHandlerInterface|string $handler
      *
      * @return void
      */
@@ -83,7 +84,7 @@ class Application
      * Add a POST route
      *
      * @param string $path
-     * @param mixed $handler
+     * @param RequestHandlerInterface|string $handler
      *
      * @return void
      */
@@ -96,7 +97,7 @@ class Application
      * Add a PUT route
      *
      * @param string $path
-     * @param mixed $handler
+     * @param RequestHandlerInterface|string $handler
      *
      * @return void
      */
@@ -109,7 +110,7 @@ class Application
      * Add a PATCH route
      *
      * @param string $path
-     * @param mixed $handler
+     * @param RequestHandlerInterface|string $handler
      *
      * @return void
      */
@@ -122,7 +123,7 @@ class Application
      * Add a DELETE route
      *
      * @param string $path
-     * @param mixed $handler
+     * @param RequestHandlerInterface|string $handler
      *
      * @return void
      */
@@ -136,7 +137,7 @@ class Application
      *
      * @param string[] $methods
      * @param string $path
-     * @param mixed $handler
+     * @param RequestHandlerInterface|string $handler
      *
      * @return void
      */
