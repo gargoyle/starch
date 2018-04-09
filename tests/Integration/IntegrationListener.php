@@ -41,7 +41,7 @@ class IntegrationListener extends BaseTestListener
             )
             . PHP_EOL;
 
-        usleep(10000);
+        usleep(50000);
     }
 
     public function endTestSuite(TestSuite $suite)
