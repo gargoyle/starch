@@ -16,7 +16,7 @@
         "http-interop/http-server-middleware": "^1.0",
         "nikic/fast-route": "^1.2",
         "psr/container": "^1.0",
-        "starchphp/middleware": "^1.0",
+        "starchphp/middleware": "^2.0",
         "zendframework/zend-diactoros": "^1.4"
     },
     "require-dev": {
