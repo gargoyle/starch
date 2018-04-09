@@ -8,8 +8,8 @@ To install Starch, you need a minimum of two packages:
 If you want to use Starch' built in RouterMiddleware, you'll also need to install `php-di/invoker`.
 
 ```shell
-composer install starchphp/starch
-composer install php-di/php-di
+composer require starchphp/starch
+composer require php-di/php-di
 ```
 
 Php-di was used as an example here. It comes with invoker as well, so there's no need to install it separately.
