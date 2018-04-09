@@ -2,6 +2,7 @@
 
 namespace Starch;
 
+use Exception;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -194,7 +195,7 @@ class Application
             );
 
             return $dispatcher->dispatch($request);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return $this->getContainer()->get(ExceptionHandler::class)->handle($e);
         }
     }

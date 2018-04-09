@@ -6,9 +6,9 @@ use FastRoute\Dispatcher;
 use FastRoute\RouteCollector;
 use Psr\Http\Message\ServerRequestInterface;
 use Starch\Exception\HttpException;
-use function FastRoute\simpleDispatcher;
 use Starch\Request\MethodNotAllowedRequestHandler;
 use Starch\Request\NotFoundRequestHandler;
+use function FastRoute\simpleDispatcher;
 
 class Router
 {
@@ -51,19 +51,18 @@ class Router
         switch ($routeInfo[0]) {
             case Dispatcher::FOUND:
                 $route = $this->routes[$routeInfo[1]];
-                foreach ($routeInfo[2] as $key => $value) {
-                    $request = $request->withAttribute($key, $value);
-                }
 
+                $request = $this->setRouteAttributes($routeInfo, $request);
                 $request = $request->withAttribute('route', $route);
+
                 $requestHandler = $route->getHandler();
                 break;
             case Dispatcher::METHOD_NOT_ALLOWED:
-                $requestHandler =  new MethodNotAllowedRequestHandler($routeInfo[1]);
+                $requestHandler = new MethodNotAllowedRequestHandler($routeInfo[1]);
                 break;
             case Dispatcher::NOT_FOUND:
             default:
-                $requestHandler =  new NotFoundRequestHandler();
+                $requestHandler = new NotFoundRequestHandler();
         }
 
         return $request->withAttribute('requestHandler', $requestHandler);
@@ -81,5 +80,21 @@ class Router
         foreach ($this->routes as $index => $route) {
             $routeCollector->addRoute($route->getMethods(), $route->getPath(), $index);
         }
+    }
+
+    /**
+     * Uses the routeInfo from FastRoute to set attributes on the request
+     *
+     * @param array $routeInfo
+     * @param ServerRequestInterface $request
+     *
+     * @return ServerRequestInterface
+     */
+    private function setRouteAttributes(array $routeInfo, ServerRequestInterface $request): ServerRequestInterface {
+        foreach ($routeInfo[2] as $key => $value) {
+            $request = $request->withAttribute($key, $value);
+        }
+
+        return $request;
     }
 }
