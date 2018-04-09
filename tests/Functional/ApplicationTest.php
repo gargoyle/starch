@@ -2,10 +2,10 @@
 
 namespace Starch\Tests\Functional;
 
-use Starch\Tests\ApplicationTestCase;
-use Interop\Http\Server\RequestHandlerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
+use Starch\Tests\ApplicationTestCase;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\Response\TextResponse;
 

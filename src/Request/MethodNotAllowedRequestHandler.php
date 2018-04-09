@@ -2,9 +2,9 @@
 
 namespace Starch\Request;
 
-use Interop\Http\Server\RequestHandlerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use Starch\Exception\MethodNotAllowedException;
 
 class MethodNotAllowedRequestHandler implements RequestHandlerInterface

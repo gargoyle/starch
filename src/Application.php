@@ -2,10 +2,10 @@
 
 namespace Starch;
 
-use Interop\Http\Server\MiddlewareInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
 use RuntimeException;
 use Starch\Exception\ExceptionHandler;
 use Starch\Middleware\Middleware;
