@@ -5,6 +5,8 @@ namespace Starch\Tests\Functional;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Starch\Exception\MethodNotAllowedException;
+use Starch\Exception\NotFoundHttpException;
 use Starch\Tests\ApplicationTestCase;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\Response\TextResponse;
@@ -25,23 +27,21 @@ class ApplicationTest extends ApplicationTestCase
         $this->assertEquals('foo', (string)$response->getBody());
     }
 
-    public function testReturns404ResponseOnNotFound()
+    public function testThrowsNotFoundException()
     {
-        $response = $this->get('/');
-
-        $this->assertEquals(404, $response->getStatusCode());
+        $this->expectException(NotFoundHttpException::class);
+        $this->get('/');
     }
 
-    public function testReturns405ResponseOnMethodNotAllowed()
+    public function testThrowsMethodNotAllowedException()
     {
+        $this->expectException(MethodNotAllowedException::class);
         $this->app->get('/', new class implements RequestHandlerInterface {
             public function handle(ServerRequestInterface $request): ResponseInterface {
                 return new Response();
             }
         });
 
-        $response = $this->post('/');
-
-        $this->assertEquals(405, $response->getStatusCode());
+        $this->post('/');
     }
 }

@@ -2,14 +2,12 @@
 
 namespace Starch;
 
-use Exception;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use RuntimeException;
-use Starch\Exception\ExceptionHandler;
 use Starch\Middleware\Middleware;
 use Starch\Middleware\Stack;
 use Starch\Router\Router;
@@ -180,25 +178,21 @@ class Application
      */
     public function process(ServerRequestInterface $request): ResponseInterface
     {
-        try {
-            $request = $this->getContainer()->get(Router::class)->dispatch($request);
+        $request = $this->getContainer()->get(Router::class)->dispatch($request);
 
-            $filteredMiddleware = [];
-            foreach ($this->middleware as $middleware) {
-                if ($middleware->executeFor($request->getAttribute('route'))) {
-                    $filteredMiddleware[] = $middleware->getMiddleware();
-                }
+        $filteredMiddleware = [];
+        foreach ($this->middleware as $middleware) {
+            if ($middleware->executeFor($request->getAttribute('route'))) {
+                $filteredMiddleware[] = $middleware->getMiddleware();
             }
-
-            $dispatcher = new Stack(
-                $filteredMiddleware,
-                $request->getAttribute('requestHandler')
-            );
-
-            return $dispatcher->dispatch($request);
-        } catch (Exception $e) {
-            return $this->getContainer()->get(ExceptionHandler::class)->handle($e);
         }
+
+        $dispatcher = new Stack(
+            $filteredMiddleware,
+            $request->getAttribute('requestHandler')
+        );
+
+        return $dispatcher->dispatch($request);
     }
 
     /********************************************************************************
@@ -214,7 +208,6 @@ class Application
     {
         $requiredDependencies = [
             EmitterInterface::class,
-            ExceptionHandler::class,
             Router::class,
         ];
 

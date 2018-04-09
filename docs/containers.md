@@ -11,7 +11,6 @@ code examples.
 The following dependencies are required to be set in your container implementation for Starch to work:
 
 - Zend\Diactoros\Response\EmitterInterface, this will likely be a SapiEmitter implementation
-- Starch\Exception\ExceptionHandler
 - Starch\Router\Router
 
 For PHP-DI, the base configuration would look a little something like:
@@ -19,7 +18,6 @@ For PHP-DI, the base configuration would look a little something like:
 ```php
 use function DI\object;
 use DI\ContainerBuilder;
-use Starch\Exception\ExceptionHandler;
 use Starch\Router\Router;
 use Zend\Diactoros\Response\EmitterInterface;
 
@@ -27,8 +25,6 @@ $builder = ContainerBuilder();
 
 $builder->addDefinitions([
     EmitterInterface::class => object(SapiEmitter::class),
-    
-    ExceptionHandler::class => object(),
     
     Router::class => object(),
 ]);
