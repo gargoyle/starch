@@ -2,16 +2,16 @@
 
 namespace Starch;
 
-use Closure;
-use Interop\Http\Server\MiddlewareInterface;
-use mindplay\middleman\ContainerResolver;
-use mindplay\middleman\Dispatcher;
+use Exception;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use RuntimeException;
 use Starch\Exception\ExceptionHandler;
 use Starch\Middleware\Middleware;
+use Starch\Middleware\Stack;
 use Starch\Router\Router;
 use Zend\Diactoros\Response\EmitterInterface;
 use Zend\Diactoros\ServerRequestFactory;
@@ -26,7 +26,7 @@ class Application
     /**
      * @var Middleware[]
      */
-    private $middleware;
+    private $middleware = [];
 
     public function __construct(ContainerInterface $container)
     {
@@ -45,13 +45,21 @@ class Application
     /**
      * Add all middleware to one array, it will be filtered based on the route once a request is being processed.
      *
-     * @param Closure|MiddlewareInterface|string $middleware
+     * @param MiddlewareInterface|string $middleware
      * @param string|null $pathConstraint
      *
      * @return void
      */
     public function add($middleware, string $pathConstraint = null): void
     {
+        if (is_string($middleware)) {
+            $middleware = $this->getContainer()->get($middleware);
+        }
+
+        if (! $middleware instanceof MiddlewareInterface) {
+            throw new \InvalidArgumentException('Middleware must be an instance of ' . MiddlewareInterface::class);
+        }
+
         $this->middleware[] = new Middleware($middleware, $pathConstraint);
     }
 
@@ -63,7 +71,7 @@ class Application
      * Add a GET route
      *
      * @param string $path
-     * @param mixed $handler
+     * @param RequestHandlerInterface|string $handler
      *
      * @return void
      */
@@ -76,7 +84,7 @@ class Application
      * Add a POST route
      *
      * @param string $path
-     * @param mixed $handler
+     * @param RequestHandlerInterface|string $handler
      *
      * @return void
      */
@@ -89,7 +97,7 @@ class Application
      * Add a PUT route
      *
      * @param string $path
-     * @param mixed $handler
+     * @param RequestHandlerInterface|string $handler
      *
      * @return void
      */
@@ -102,7 +110,7 @@ class Application
      * Add a PATCH route
      *
      * @param string $path
-     * @param mixed $handler
+     * @param RequestHandlerInterface|string $handler
      *
      * @return void
      */
@@ -115,7 +123,7 @@ class Application
      * Add a DELETE route
      *
      * @param string $path
-     * @param mixed $handler
+     * @param RequestHandlerInterface|string $handler
      *
      * @return void
      */
@@ -129,7 +137,7 @@ class Application
      *
      * @param string[] $methods
      * @param string $path
-     * @param mixed $handler
+     * @param RequestHandlerInterface|string $handler
      *
      * @return void
      */
@@ -182,13 +190,13 @@ class Application
                 }
             }
 
-            $dispatcher = new Dispatcher(
+            $dispatcher = new Stack(
                 $filteredMiddleware,
-                new ContainerResolver($this->getContainer())
+                $request->getAttribute('requestHandler')
             );
 
             return $dispatcher->dispatch($request);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return $this->getContainer()->get(ExceptionHandler::class)->handle($e);
         }
     }

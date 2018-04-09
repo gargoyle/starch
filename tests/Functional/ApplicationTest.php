@@ -2,7 +2,9 @@
 
 namespace Starch\Tests\Functional;
 
-use Starch\Router\RouterMiddleware;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use Starch\Tests\ApplicationTestCase;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\Response\TextResponse;
@@ -11,13 +13,11 @@ class ApplicationTest extends ApplicationTestCase
 {
     public function testProcessesRequest()
     {
-        $this->app->get('/', function() {
-            $response = new TextResponse('foo');
-
-            return $response;
+        $this->app->get('/', new class implements RequestHandlerInterface {
+            public function handle(ServerRequestInterface $request): ResponseInterface {
+                return new TextResponse('foo');
+            }
         });
-
-        $this->app->add(RouterMiddleware::class);
 
         $response = $this->get('/');
 
@@ -34,8 +34,10 @@ class ApplicationTest extends ApplicationTestCase
 
     public function testReturns405ResponseOnMethodNotAllowed()
     {
-        $this->app->get('/', function() {
-            return new Response();
+        $this->app->get('/', new class implements RequestHandlerInterface {
+            public function handle(ServerRequestInterface $request): ResponseInterface {
+                return new Response();
+            }
         });
 
         $response = $this->post('/');

@@ -12,11 +12,11 @@
     ],
     "require": {
         "php": ">=7.1",
-        "http-interop/http-server-handler": "^1.0",
-        "http-interop/http-server-middleware": "^1.0",
-        "mindplay/middleman": "^3.0.1",
         "nikic/fast-route": "^1.2",
         "psr/container": "^1.0",
+        "psr/http-server-handler": "^1.0",
+        "psr/http-server-middleware": "^1.0",
+        "starchphp/middleware": "^2.0",
         "zendframework/zend-diactoros": "^1.4"
     },
     "require-dev": {
@@ -25,7 +25,6 @@
         "phpunit/phpunit": "^6.1"
     },
     "suggest": {
-        "php-di/invoker": "Required if you want to use the provided RouterMiddleware",
         "php-di/php-di": "A very easy to configure PSR-11 container"
     },
     "autoload": {

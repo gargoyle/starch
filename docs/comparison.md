@@ -40,7 +40,7 @@
  
 **Read more:**
 
-- [Installation and Usage](docs/usage.md)
+- [Usage](docs/usage.md)
 - [Using your own container](docs/containers.md)
 - [Middleware](docs/middleware.md)
 - [Components bound together by Starch](docs/components.md)

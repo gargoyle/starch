@@ -2,9 +2,9 @@
 
 namespace Starch\Tests\Unit\Middleware;
 
-use Interop\Http\Server\MiddlewareInterface;
 use PHPUnit\Framework\TestCase;
 use PHPUnit_Framework_MockObject_MockObject;
+use Psr\Http\Server\MiddlewareInterface;
 use Starch\Middleware\Middleware;
 use Starch\Router\Route;
 

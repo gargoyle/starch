@@ -5,9 +5,9 @@ namespace Starch\Router;
 use FastRoute\Dispatcher;
 use FastRoute\RouteCollector;
 use Psr\Http\Message\ServerRequestInterface;
-use Starch\Exception\HttpException;
-use Starch\Exception\MethodNotAllowedException;
-use Starch\Exception\NotFoundHttpException;
+use Psr\Http\Server\RequestHandlerInterface;
+use Starch\Request\MethodNotAllowedRequestHandler;
+use Starch\Request\NotFoundRequestHandler;
 use function FastRoute\simpleDispatcher;
 
 class Router
@@ -22,7 +22,7 @@ class Router
      *
      * @param array $methods
      * @param string $path
-     * @param mixed $handler
+     * @param RequestHandlerInterface|string $handler
      *
      * @return Route
      */
@@ -38,8 +38,6 @@ class Router
      *
      * @param ServerRequestInterface $request
      *
-     * @throws HttpException
-     *
      * @return ServerRequestInterface
      */
     public function dispatch(ServerRequestInterface $request): ServerRequestInterface
@@ -48,18 +46,13 @@ class Router
 
         $routeInfo = $dispatcher->dispatch($request->getMethod(), $request->getUri()->getPath());
 
-        switch ($routeInfo[0]) {
-            case Dispatcher::FOUND:
-                $route = $this->routes[$routeInfo[1]];
-                $route->setArguments($routeInfo[2]);
-
-                return $request->withAttribute('route', $route);
-            case Dispatcher::METHOD_NOT_ALLOWED:
-                throw new MethodNotAllowedException($request->getMethod(), $routeInfo[1]);
-            case Dispatcher::NOT_FOUND:
-            default:
-                throw new NotFoundHttpException(sprintf("Route '%s' not found.", $request->getUri()->getPath()));
+        if ($routeInfo[0] === Dispatcher::FOUND) {
+            $request = $this->processFoundRequest($routeInfo, $request);
         }
+
+        $requestHandler = $this->getRequestHandler($routeInfo, $request);
+
+        return $request->withAttribute('requestHandler', $requestHandler);
     }
 
     /**
@@ -73,6 +66,45 @@ class Router
     {
         foreach ($this->routes as $index => $route) {
             $routeCollector->addRoute($route->getMethods(), $route->getPath(), $index);
+        }
+    }
+
+    /**
+     * Uses the routeInfo from FastRoute to set attributes on the request
+     *
+     * @param array $routeInfo
+     * @param ServerRequestInterface $request
+     *
+     * @return ServerRequestInterface
+     */
+    private function processFoundRequest(array $routeInfo, ServerRequestInterface $request): ServerRequestInterface {
+        $route = $this->routes[$routeInfo[1]];
+
+        foreach ($routeInfo[2] as $key => $value) {
+            $request = $request->withAttribute($key, $value);
+        }
+
+        $request = $request->withAttribute('route', $route);
+
+        return $request;
+    }
+
+    /**
+     * @param array $routeInfo
+     * @param ServerRequestInterface $request
+     *
+     * @return RequestHandlerInterface|string
+     */
+    private function getRequestHandler(array $routeInfo, ServerRequestInterface $request)
+    {
+        switch ($routeInfo[0]) {
+            case Dispatcher::FOUND:
+                return $request->getAttribute('route')->getHandler();
+            case Dispatcher::METHOD_NOT_ALLOWED:
+                return new MethodNotAllowedRequestHandler($routeInfo[1]);
+            case Dispatcher::NOT_FOUND:
+            default:
+                return new NotFoundRequestHandler();
         }
     }
 }

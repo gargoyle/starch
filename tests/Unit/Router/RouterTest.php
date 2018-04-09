@@ -4,36 +4,36 @@ namespace Starch\Tests\Unit\Router;
 
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
+use Starch\Request\MethodNotAllowedRequestHandler;
+use Starch\Request\NotFoundRequestHandler;
 use Starch\Router\Route;
 use Starch\Router\Router;
 use Zend\Diactoros\ServerRequest;
 
 class RouterTest extends TestCase
 {
-    /**
-     * @expectedException \Starch\Exception\NotFoundHttpException
-     */
-    public function testThrowsNotFoundException()
+    public function testSetsNotFoundHandler()
     {
         $router = new Router();
         $router->map(['GET'], '/', 'foo');
 
         $request = $this->getRequest('GET', '/foo');
 
-        $router->dispatch($request);
+        $request = $router->dispatch($request);
+
+        $this->assertInstanceOf(NotFoundRequestHandler::class, $request->getAttribute('requestHandler'));
     }
 
-    /**
-     * @expectedException \Starch\Exception\MethodNotAllowedException
-     */
-    public function testThrowsMethodNotAllowedException()
+    public function testSetsMethodNotAllowedHandler()
     {
         $router = new Router();
         $router->map(['GET'], '/', 'foo');
 
         $request = $this->getRequest('POST', '/');
 
-        $router->dispatch($request);
+        $request = $router->dispatch($request);
+
+        $this->assertInstanceOf(MethodNotAllowedRequestHandler::class, $request->getAttribute('requestHandler'));
     }
 
     public function testAddsRouteToRequest()
@@ -51,7 +51,6 @@ class RouterTest extends TestCase
         $this->assertEquals('foo', $route->getHandler());
         $this->assertEquals(['GET'], $route->getMethods());
         $this->assertEquals('/', $route->getPath());
-        $this->assertEmpty($route->getArguments());
     }
 
     public function testAddsArguments()
@@ -63,9 +62,7 @@ class RouterTest extends TestCase
 
         $request = $router->dispatch($request);
 
-        $route = $request->getAttribute('route');
-
-        $this->assertEquals(['foo' => 'bar'], $route->getArguments());
+        $this->assertEquals('bar', $request->getAttribute('foo'));
     }
 
     /**

@@ -2,6 +2,8 @@
 
 namespace Starch\Router;
 
+use Psr\Http\Server\RequestHandlerInterface;
+
 class Route
 {
     /**
@@ -15,12 +17,7 @@ class Route
     private $path;
 
     /**
-     * @var array
-     */
-    private $arguments;
-
-    /**
-     * @var mixed
+     * @var RequestHandlerInterface|string
      */
     private $handler;
 
@@ -44,15 +41,5 @@ class Route
     public function getHandler()
     {
         return $this->handler;
-    }
-
-    public function getArguments(): array
-    {
-        return $this->arguments;
-    }
-
-    public function setArguments(array $arguments): void
-    {
-        $this->arguments = $arguments;
     }
 }
