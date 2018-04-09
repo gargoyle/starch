@@ -12,7 +12,7 @@ use Zend\Diactoros\ServerRequest;
 
 class RouterTest extends TestCase
 {
-    public function testThrowsNotFoundException()
+    public function testSetsNotFoundHandler()
     {
         $router = new Router();
         $router->map(['GET'], '/', 'foo');
@@ -24,7 +24,7 @@ class RouterTest extends TestCase
         $this->assertInstanceOf(NotFoundRequestHandler::class, $request->getAttribute('requestHandler'));
     }
 
-    public function testThrowsMethodNotAllowedException()
+    public function testSetsMethodNotAllowedHandler()
     {
         $router = new Router();
         $router->map(['GET'], '/', 'foo');
