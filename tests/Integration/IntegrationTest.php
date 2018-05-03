@@ -3,20 +3,34 @@
 namespace Starch\Tests\Integration;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
 use PHPUnit\Framework\TestCase;
 
 class IntegrationTest extends TestCase
 {
-    public function testRunApp()
-    {
-        $client = new Client();
+    /**
+     * @var string
+     */
+    private $baseUrl;
 
-        $url = sprintf('http://%s:%s/',
+    /**
+     * @var Client
+     */
+    private $client;
+
+    public function setUp()
+    {
+        $this->baseUrl = sprintf('http://%s:%s',
             getenv('INTEGRATION_TEST_SERVER_HOST'),
             getenv('INTEGRATION_TEST_SERVER_PORT')
         );
 
-        $response = $client->request('GET', $url);
+        $this->client = new Client();
+    }
+
+    public function testRunApp()
+    {
+        $response = $this->client->request('GET', $this->baseUrl . '/');
         
         $this->assertEquals('Hello, world!', (string)$response->getBody());
         $this->assertTrue($response->hasHeader('x-foo'));
@@ -24,15 +38,15 @@ class IntegrationTest extends TestCase
 
     public function testRouteRequestHandlerAsString()
     {
-        $client = new Client();
-
-        $url = sprintf('http://%s:%s/foo',
-            getenv('INTEGRATION_TEST_SERVER_HOST'),
-            getenv('INTEGRATION_TEST_SERVER_PORT')
-        );
-
-        $response = $client->request('GET', $url);
+        $response = $this->client->request('GET', $this->baseUrl . '/foo');
 
         $this->assertEquals('foo', (string)$response->getBody());
+    }
+
+    public function testMethodNotAllowed()
+    {
+        $this->expectException(ClientException::class);
+        $this->expectExceptionCode(405);
+        $this->client->request('POST', $this->baseUrl . '/');
     }
 }
