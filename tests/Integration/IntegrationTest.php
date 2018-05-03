@@ -3,7 +3,6 @@
 namespace Starch\Tests\Integration;
 
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\ClientException;
 use PHPUnit\Framework\TestCase;
 
 class IntegrationTest extends TestCase
@@ -34,19 +33,5 @@ class IntegrationTest extends TestCase
         
         $this->assertEquals('Hello, world!', (string)$response->getBody());
         $this->assertTrue($response->hasHeader('x-foo'));
-    }
-
-    public function testRouteRequestHandlerAsString()
-    {
-        $response = $this->client->request('GET', $this->baseUrl . '/foo');
-
-        $this->assertEquals('foo', (string)$response->getBody());
-    }
-
-    public function testMethodNotAllowed()
-    {
-        $this->expectException(ClientException::class);
-        $this->expectExceptionCode(405);
-        $this->client->request('POST', $this->baseUrl . '/');
     }
 }
