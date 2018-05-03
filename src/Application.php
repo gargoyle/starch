@@ -141,6 +141,10 @@ class Application
      */
     public function map(array $methods, string $path, $handler): void
     {
+        if (is_string($handler)) {
+            $handler = $this->getContainer()->get($handler);
+        }
+
         $this->getContainer()->get(Router::class)->map($methods, $path, $handler);
     }
 

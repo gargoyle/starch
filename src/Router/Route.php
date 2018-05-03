@@ -17,11 +17,11 @@ class Route
     private $path;
 
     /**
-     * @var RequestHandlerInterface|string
+     * @var RequestHandlerInterface
      */
     private $handler;
 
-    public function __construct(array $methods, string $path, $handler)
+    public function __construct(array $methods, string $path, RequestHandlerInterface $handler)
     {
         $this->methods = array_map('strtoupper', $methods);
         $this->path = $path;
@@ -38,7 +38,7 @@ class Route
         return $this->path;
     }
 
-    public function getHandler()
+    public function getHandler(): RequestHandlerInterface
     {
         return $this->handler;
     }

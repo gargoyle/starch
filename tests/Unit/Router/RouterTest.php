@@ -4,18 +4,30 @@ namespace Starch\Tests\Unit\Router;
 
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use Starch\Request\MethodNotAllowedRequestHandler;
 use Starch\Request\NotFoundRequestHandler;
 use Starch\Router\Route;
 use Starch\Router\Router;
+use Starch\Tests\FooRequestHandler;
 use Zend\Diactoros\ServerRequest;
 
 class RouterTest extends TestCase
 {
+    /**
+     * @var RequestHandlerInterface
+     */
+    private $requestHandler;
+
+    public function setUp()
+    {
+        $this->requestHandler = new FooRequestHandler();
+    }
+
     public function testSetsNotFoundHandler()
     {
         $router = new Router();
-        $router->map(['GET'], '/', 'foo');
+        $router->map(['GET'], '/', $this->requestHandler);
 
         $request = $this->getRequest('GET', '/foo');
 
@@ -27,7 +39,7 @@ class RouterTest extends TestCase
     public function testSetsMethodNotAllowedHandler()
     {
         $router = new Router();
-        $router->map(['GET'], '/', 'foo');
+        $router->map(['GET'], '/', $this->requestHandler);
 
         $request = $this->getRequest('POST', '/');
 
@@ -39,16 +51,17 @@ class RouterTest extends TestCase
     public function testAddsRouteToRequest()
     {
         $router = new Router();
-        $router->map(['GET'], '/', 'foo');
+        $router->map(['GET'], '/', $this->requestHandler);
 
         $request = $this->getRequest('GET', '/');
 
         $request = $router->dispatch($request);
 
+        /** @var Route $route */
         $route = $request->getAttribute('route');
 
         $this->assertInstanceOf(Route::class, $route);
-        $this->assertEquals('foo', $route->getHandler());
+        $this->assertEquals('foo', (string) $route->getHandler()->handle($request)->getBody());
         $this->assertEquals(['GET'], $route->getMethods());
         $this->assertEquals('/', $route->getPath());
     }
@@ -56,7 +69,7 @@ class RouterTest extends TestCase
     public function testAddsArguments()
     {
         $router = new Router();
-        $router->map(['GET'], '/{foo}', 'foo');
+        $router->map(['GET'], '/{foo}', $this->requestHandler);
 
         $request = $this->getRequest('GET', '/bar');
 

@@ -22,11 +22,11 @@ class Router
      *
      * @param array $methods
      * @param string $path
-     * @param RequestHandlerInterface|string $handler
+     * @param RequestHandlerInterface $handler
      *
      * @return Route
      */
-    public function map(array $methods, string $path, $handler): Route
+    public function map(array $methods, string $path, RequestHandlerInterface $handler): Route
     {
         return $this->routes[] = new Route($methods, $path, $handler);
     }
@@ -93,9 +93,9 @@ class Router
      * @param array $routeInfo
      * @param ServerRequestInterface $request
      *
-     * @return RequestHandlerInterface|string
+     * @return RequestHandlerInterface
      */
-    private function getRequestHandler(array $routeInfo, ServerRequestInterface $request)
+    private function getRequestHandler(array $routeInfo, ServerRequestInterface $request): RequestHandlerInterface
     {
         switch ($routeInfo[0]) {
             case Dispatcher::FOUND:
