@@ -185,8 +185,9 @@ class Application
         $request = $this->getContainer()->get(Router::class)->dispatch($request);
 
         $filteredMiddleware = [];
+        $route = $request->getAttribute('route');
         foreach ($this->middleware as $middleware) {
-            if ($middleware->executeFor($request->getAttribute('route'))) {
+            if ($route === null || $middleware->executeFor($route)) {
                 $filteredMiddleware[] = $middleware->getMiddleware();
             }
         }
