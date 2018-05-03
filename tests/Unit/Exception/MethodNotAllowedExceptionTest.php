@@ -12,6 +12,6 @@ class MethodNotAllowedExceptionTest extends TestCase
         $exception = new MethodNotAllowedException('GET', ['POST', 'PUT']);
 
         $this->assertEquals("Method 'GET' not allowed. Allowed: POST, PUT", $exception->getMessage());
-        $this->assertEquals(405, $exception->getStatusCode());
+        $this->assertEquals(405, $exception->getCode());
     }
 }

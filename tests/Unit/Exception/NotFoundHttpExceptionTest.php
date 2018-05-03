@@ -11,7 +11,7 @@ class NotFoundHttpExceptionTest extends TestCase
     {
         $exception = new NotFoundHttpException('not found');
 
-        $this->assertEquals(404, $exception->getStatusCode());
+        $this->assertEquals(404, $exception->getCode());
         $this->assertEquals('not found', $exception->getMessage());
     }
 }

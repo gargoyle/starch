@@ -11,7 +11,7 @@ class HttpExceptionTest extends TestCase
     {
         $exception = new HttpException(418, "I'M A TEAPOT");
 
-        $this->assertEquals(418, $exception->getStatusCode());
+        $this->assertEquals(418, $exception->getCode());
         $this->assertEquals("I'M A TEAPOT", $exception->getMessage());
     }
 }
