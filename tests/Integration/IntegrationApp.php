@@ -2,6 +2,7 @@
 
 namespace Starch\Tests\Integration;
 
+use Exception;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -28,7 +29,11 @@ class IntegrationApp extends Application
         $this->add(new class implements MiddlewareInterface {
             public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
             {
-                $response = $handler->handle($request);
+                try {
+                    $response = $handler->handle($request);
+                } catch (Exception $e) {
+                    return new TextResponse($e->getMessage(), $e->getCode());
+                }
 
                 return $response->withHeader('x-foo', 'bar');
             }
