@@ -2,12 +2,13 @@
 
 namespace Starch\Middleware;
 
+use Psr\Http\Server\MiddlewareInterface;
 use Starch\Router\Route;
 
 class Middleware
 {
     /**
-     * @var mixed
+     * @var MiddlewareInterface
      */
     private $middleware;
 
@@ -16,16 +17,16 @@ class Middleware
      */
     private $pathConstraint;
 
-    public function __construct($middleware, string $pathConstraint = null)
+    public function __construct(MiddlewareInterface $middleware, string $pathConstraint = null)
     {
         $this->middleware = $middleware;
         $this->pathConstraint = $pathConstraint;
     }
 
     /**
-     * @return mixed
+     * @return MiddlewareInterface
      */
-    public function getMiddleware()
+    public function getMiddleware(): MiddlewareInterface
     {
         return $this->middleware;
     }
