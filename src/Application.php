@@ -10,6 +10,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 use RuntimeException;
 use Starch\Exception\HttpException;
 use Starch\Middleware\Middleware;
+use Starch\Middleware\NextHandler;
 use Starch\Middleware\Stack;
 use Starch\Router\Route;
 use Starch\Router\Router;
@@ -187,19 +188,9 @@ class Application
         try {
             $request = $this->getContainer()->get(Router::class)->dispatch($request);
         } catch (HttpException $e) {
-            $requestHandler = new class($e) implements RequestHandlerInterface {
-                private $exception;
-
-                public function __construct(HttpException $exception)
-                {
-                    $this->exception = $exception;
-                }
-
-                public function handle(ServerRequestInterface $request): ResponseInterface
-                {
-                    throw $this->exception;
-                }
-            };
+            $requestHandler = new NextHandler(function() use ($e) {
+                throw $e;
+            });
         }
 
         $filteredMiddleware = [];
