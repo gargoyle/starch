@@ -5,8 +5,8 @@ namespace Starch\Tests\Unit\Router;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Starch\Request\MethodNotAllowedRequestHandler;
-use Starch\Request\NotFoundRequestHandler;
+use Starch\Exception\MethodNotAllowedException;
+use Starch\Exception\NotFoundHttpException;
 use Starch\Router\Route;
 use Starch\Router\Router;
 use Starch\Tests\FooRequestHandler;
@@ -31,9 +31,8 @@ class RouterTest extends TestCase
 
         $request = $this->getRequest('GET', '/foo');
 
-        $request = $router->dispatch($request);
-
-        $this->assertInstanceOf(NotFoundRequestHandler::class, $request->getAttribute('requestHandler'));
+        $this->expectException(NotFoundHttpException::class);
+        $router->dispatch($request);
     }
 
     public function testSetsMethodNotAllowedHandler()
@@ -43,9 +42,8 @@ class RouterTest extends TestCase
 
         $request = $this->getRequest('POST', '/');
 
-        $request = $router->dispatch($request);
-
-        $this->assertInstanceOf(MethodNotAllowedRequestHandler::class, $request->getAttribute('requestHandler'));
+        $this->expectException(MethodNotAllowedException::class);
+        $router->dispatch($request);
     }
 
     public function testAddsRouteToRequest()

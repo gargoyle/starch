@@ -8,8 +8,10 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use RuntimeException;
+use Starch\Exception\HttpException;
 use Starch\Middleware\Middleware;
 use Starch\Middleware\Stack;
+use Starch\Router\Route;
 use Starch\Router\Router;
 use Zend\Diactoros\Response\EmitterInterface;
 use Zend\Diactoros\ServerRequestFactory;
@@ -182,9 +184,26 @@ class Application
      */
     public function process(ServerRequestInterface $request): ResponseInterface
     {
-        $request = $this->getContainer()->get(Router::class)->dispatch($request);
+        try {
+            $request = $this->getContainer()->get(Router::class)->dispatch($request);
+        } catch (HttpException $e) {
+            $requestHandler = new class($e) implements RequestHandlerInterface {
+                private $exception;
+
+                public function __construct(HttpException $exception)
+                {
+                    $this->exception = $exception;
+                }
+
+                public function handle(ServerRequestInterface $request): ResponseInterface
+                {
+                    throw $this->exception;
+                }
+            };
+        }
 
         $filteredMiddleware = [];
+        /** @var Route $route */
         $route = $request->getAttribute('route');
         foreach ($this->middleware as $middleware) {
             if ($route === null || $middleware->executeFor($route)) {
@@ -192,9 +211,13 @@ class Application
             }
         }
 
+        if ($route !== null) {
+            $requestHandler = $route->getHandler();
+        }
+
         $dispatcher = new Stack(
             $filteredMiddleware,
-            $request->getAttribute('requestHandler')
+            $requestHandler
         );
 
         return $dispatcher->dispatch($request);
