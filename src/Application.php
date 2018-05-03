@@ -12,7 +12,6 @@ use Starch\Exception\HttpException;
 use Starch\Middleware\Middleware;
 use Starch\Middleware\NextHandler;
 use Starch\Middleware\Stack;
-use Starch\Router\Route;
 use Starch\Router\Router;
 use Zend\Diactoros\Response\EmitterInterface;
 use Zend\Diactoros\ServerRequestFactory;
@@ -174,10 +173,7 @@ class Application
     }
 
     /**
-     * Dispatch the request to the router
-     * Filter the middleware according to the route
-     * Dispatch routed request to middleman to process middleware
-     * Pass exceptions to the exception handler
+     * Process the request into a response
      *
      * @param  ServerRequestInterface $request
      *
@@ -185,26 +181,26 @@ class Application
      */
     public function process(ServerRequestInterface $request): ResponseInterface
     {
+        $filteredMiddleware = $this->middleware;
+
         try {
             $request = $this->getContainer()->get(Router::class)->dispatch($request);
+
+            $route = $request->getAttribute('route');
+            $filteredMiddleware = array_filter($filteredMiddleware, function(Middleware $middleware) use ($route) {
+                return $middleware->executeFor($route);
+            });
+            $requestHandler = $route->getHandler();
         } catch (HttpException $e) {
             $requestHandler = new NextHandler(function() use ($e) {
                 throw $e;
             });
         }
 
-        $filteredMiddleware = [];
-        /** @var Route $route */
-        $route = $request->getAttribute('route');
-        foreach ($this->middleware as $middleware) {
-            if ($route === null || $middleware->executeFor($route)) {
-                $filteredMiddleware[] = $middleware->getMiddleware();
-            }
-        }
+        $filteredMiddleware = array_map(function(Middleware $middleware) {
+            return $middleware->getMiddleware();
+        }, $filteredMiddleware);
 
-        if ($route !== null) {
-            $requestHandler = $route->getHandler();
-        }
 
         $dispatcher = new Stack(
             $filteredMiddleware,
