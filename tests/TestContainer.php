@@ -23,6 +23,7 @@ class TestContainer implements ContainerInterface
         $this->dependencies[EmitterInterface::class] = new SapiEmitter();
         $this->dependencies[InvokerInterface::class] = new Invoker(null, $this);
         $this->dependencies[Router::class] = new Router();
+        $this->dependencies['handler'] = new FooRequestHandler();
     }
 
     /**

@@ -22,35 +22,35 @@ class ApplicationTest extends TestCase
 
     public function testAddGETRoute()
     {
-        $this->app->get('/', 'foo');
+        $this->app->get('/', 'handler');
 
         $this->assertHasRoute('GET');
     }
 
     public function testAddPOSTRoute()
     {
-        $this->app->post('/', 'foo');
+        $this->app->post('/', 'handler');
 
         $this->assertHasRoute('POST');
     }
 
     public function testAddPUTRoute()
     {
-        $this->app->put('/', 'foo');
+        $this->app->put('/', 'handler');
 
         $this->assertHasRoute('PUT');
     }
 
     public function testAddPATCHRoute()
     {
-        $this->app->patch('/', 'foo');
+        $this->app->patch('/', 'handler');
 
         $this->assertHasRoute('PATCH');
     }
 
     public function testAddDELETERoute()
     {
-        $this->app->delete('/', 'foo');
+        $this->app->delete('/', 'handler');
 
         $this->assertHasRoute('DELETE');
     }

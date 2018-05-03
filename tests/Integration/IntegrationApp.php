@@ -23,6 +23,8 @@ class IntegrationApp extends Application
             }
         });
 
+        $this->get('/foo', 'handler');
+
         $this->add(new class implements MiddlewareInterface {
             public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
             {
